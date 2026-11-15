@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bodega · Catálogo de carrocería con fotos</title>
 <meta name="theme-color" content="#0d0a18">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -201,6 +206,14 @@ dialog#lbDlg{width:100vw;height:100dvh;max-width:none;max-height:none;margin:0}
 .l-chg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--mute);font-size:13px}
 .copy{height:38px;border:0;border-radius:12px;background:var(--soft);color:var(--violet-hi);font:700 13.5px var(--sans)}
 .copy:hover{background:var(--violet);color:#fff}
+.cpi{width:36px;height:36px;flex:none;border:0;border-radius:10px;background:var(--soft);color:var(--violet-hi);display:inline-flex;align-items:center;justify-content:center;padding:0;vertical-align:middle;margin-left:4px}
+.cpi svg{width:18px;height:18px}
+.cpi.done{background:var(--good);color:#04210f}
+.cpi.pulse{animation:cpp .5s ease}
+@keyframes cpp{40%{transform:scale(1.18)}}
+.copy.cpi{width:42px;height:38px;padding:0;margin:0}
+.rrow .copy.cpi{padding:0}
+@media(prefers-reduced-motion:reduce){.cpi.pulse{animation:none}}
 .copy.ok{background:var(--good);color:#04210f}
 @media(max-width:780px){
   .lhead{display:none}
@@ -367,8 +380,66 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
 .admrow{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line)}
 .admform{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
 .admform label.chk{display:flex;gap:8px;align-items:center;font-size:14px}
-@media(max-width:640px){.tab{padding:0 10px;font-size:13px}.mast-in{flex-wrap:wrap}}
+@media(max-width:640px){.tab{padding:0 4px;font-size:12.5px}.mast-in{flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}.card:hover{transform:none}.scan-line{animation:none;top:50%}}
+
+#printArea{display:none}
+/* Teléfonos angostos: nada debe salirse de la pantalla */
+body{overflow-x:hidden}
+.brandline{flex-wrap:wrap}
+.tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+@media(max-width:480px){
+  .wrap{padding-left:14px;padding-right:14px}
+  .tabs{width:100%}
+  .tab{flex:1 1 auto;min-width:0;padding:0 6px;font-size:12px;white-space:nowrap}
+}
+@media(max-width:360px){.tab{padding:0 3px;font-size:11px}.wordmark{font-size:24px}}
+#pedView .sm{width:100%;max-width:100%;height:46px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);color:var(--ink);padding:0 14px;font:500 16px var(--sans)}
+#pedView textarea.sm{height:auto;min-height:64px;padding:10px 14px;resize:vertical;font-size:15px}
+#pedView .sm:focus{outline:none;border-color:var(--violet)}
+#pedView .sm::placeholder{color:var(--mute)}
+.dchips .seg-b{border:1px solid var(--line);border-radius:999px;height:38px;padding:0 14px}
+.dchips .seg-b[aria-pressed="true"]{border-color:var(--violet)}
+
+.locbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:10px 0}
+.fsz{display:inline-flex;align-items:center;gap:4px}.fsz b{font:600 13px var(--mono);min-width:46px;text-align:center}
+.resrow{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.rbig{min-width:64px;text-align:center}.rbig b{display:block;font-size:30px;color:var(--violet-hi)}.rbig small{color:var(--mute)}
+.rinfo{flex:1;min-width:0}.rchips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.rchips span{background:var(--soft);border-radius:999px;padding:4px 10px;font-size:12px}
+.dchips{display:flex;flex-wrap:wrap;gap:6px}
+.pcard{display:flex;flex-direction:column;gap:8px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:8px;color:var(--ink);font:inherit}
+.pcard b{font-size:17px}.pcard small{display:block;color:var(--mute)}
+.pit{display:flex;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid var(--line);border-left:4px solid transparent}
+.pit.c-verde{border-left-color:#22c55e;background:rgba(34,197,94,.13)}
+.pit.c-rojo{border-left-color:#ef4444;background:rgba(239,68,68,.13)}
+.pit.hecho .pmain b{text-decoration:line-through;opacity:.6}
+.pit .pchk input{width:24px;height:24px;accent-color:var(--violet-hi)}
+.pmain{flex:1;min-width:0}.pmain small{display:block;color:var(--mute)}.pmain em{font-style:normal;font-weight:700}
+.pit.c-verde em{color:#4ade80}.pit.c-rojo em{color:#ff6b8a}
+.pqty{font:700 16px var(--mono)}
+.pedtools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.pedact{margin-top:14px;flex-wrap:wrap}
+@media print{
+  html,body{background:#fff!important}
+  body.printing>*:not(#printArea){display:none!important}
+  body.printing #printArea{display:block;color:#000;background:#fff;font-family:Arial,Helvetica,sans-serif}
+  #printArea h1{font-size:1.5em;margin:0 0 .2em}#printArea .psub{margin:0 0 .8em;color:#444;font-size:.85em}
+  #printArea table{width:100%;border-collapse:collapse}
+  #printArea td{padding:.35em .3em;border-bottom:1px solid #ccc;vertical-align:top}
+  #printArea small{display:block;font-size:.8em;color:#555}
+  #printArea .pbx{width:1.4em}#printArea .pbx span{display:inline-block;width:.8em;height:.8em;border:1.5px solid #000}
+  #printArea .pq{text-align:right;font-weight:700;white-space:nowrap}
+  #printArea tr.c-verde td{background:#dcfce7!important;color:#14532d}#printArea tr.c-verde .pbx span{background:#16a34a;border-color:#16a34a}
+  #printArea tr.c-rojo td{background:#fee2e2!important;color:#7f1d1d}#printArea tr.c-rojo .pbx span{background:#dc2626;border-color:#dc2626}
+  #printArea tr.hecho td{color:#777;text-decoration:line-through}
+  #printArea tr{break-inside:avoid}
+  #printArea,#printArea *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+body.ventas nav.tabs, body.ventas #adminBtn, body.ventas .locwrap, body.ventas .bin, body.ventas #vLoc, body.ventas #vLocEdit, body.ventas #vDel, body.ventas #cpClear { display: none !important; }
+body.ventas #locShare { display: none !important; }
+.shnote { margin: 8px 0; padding: 10px 12px; border-radius: 12px; background: rgba(139,92,246,.14); border: 1px solid rgba(139,92,246,.35); font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.shnote b { color: inherit; }
 </style>
 </head>
 <body>
@@ -379,6 +450,7 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
       <button class="tab" id="tabCat" role="tab" aria-selected="true">Catálogo</button>
       <button class="tab" id="tabUbi" role="tab" aria-selected="false">Ubicaciones</button>
       <button class="tab" id="tabMue" role="tab" aria-selected="false">Muestreo</button>
+      <button class="tab" id="tabPed" role="tab" aria-selected="false">Pedidos</button>
       <button class="tab" id="tabRec" role="tab" aria-selected="false">Registro</button>
     </nav>
   </div>
@@ -464,6 +536,7 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
         </div>
         <div class="row">
           <select class="sel" id="mueUser" aria-label="Filtrar por auxiliar" hidden></select>
+          <button class="btn" id="resBtn" style="flex:none;height:44px" hidden>Resumen por auxiliar</button>
           <button class="btn tape" id="mueStart" style="flex:none;height:44px">Iniciar muestreo</button>
         </div>
       </div>
@@ -489,6 +562,38 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
     </div>
   </section>
 
+  <section id="pedView" hidden>
+    <div id="pedListBox">
+      <div class="rec-head">
+        <div><h2 class="rec-title">Pedidos</h2><p id="pedInfo"></p></div>
+        <div class="row"><button class="btn tape" id="pedNew" style="flex:none;height:44px" hidden>Nuevo pedido</button></div>
+      </div>
+      <div id="pedList"></div>
+    </div>
+    <div id="pedDet" hidden>
+      <div class="rec-head"><div><button class="mini" id="pedBack">← Pedidos</button></div></div>
+      <div id="pedHead" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+      <div id="pedDest"></div>
+      <div id="pedAddBox" hidden style="margin-top:10px"><input class="sm" id="pedFind" autocomplete="off" placeholder="Buscar producto para agregar (nombre, vehículo, año, código)" aria-label="Agregar producto"><div class="sugg" id="pedSug"></div></div>
+      <div id="pedProg" style="margin-top:10px"></div>
+      <div class="pedtools" id="pedTools" hidden>
+        <label class="chk"><input type="checkbox" id="pedAll"> Todos</label>
+        <button class="btn tape" data-pc="verde" style="flex:none;height:40px">Verde · prioridad máxima</button>
+        <button class="btn" data-pc="rojo" style="flex:none;height:40px">Rojo</button>
+        <button class="btn" data-pc="ninguno" style="flex:none;height:40px">Sin color</button>
+        <button class="btn" data-pc="del" style="flex:none;height:40px">Quitar de la lista</button>
+      </div>
+      <div id="pedItems"></div>
+      <div class="row pedact">
+        <button class="btn tape" id="pedSave" style="flex:none;height:44px">Enviar pedido</button>
+        <button class="btn" id="pedPrint" style="flex:none;height:44px">Imprimir</button>
+        <button class="btn" id="pedPdf" style="flex:none;height:44px">Descargar PDF</button>
+      </div>
+      <div class="row" style="align-items:center;margin-top:8px"><span class="soft">Tamaño de letra al imprimir:</span><span id="pedFsz"></span></div>
+      <div class="row" style="margin-top:8px"><button class="btn" id="pedClose" style="flex:none;height:40px" hidden>Cerrar pedido</button><button class="btn" id="pedDel" style="flex:none;height:40px" hidden>Borrar pedido</button></div>
+    </div>
+  </section>
+
   <section id="recView" hidden>
     <div class="rec-head">
       <div>
@@ -496,17 +601,19 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
         <p>Ubicaciones y movimientos: cuándo, quién y qué. Copia cada ubicación con su botón.</p>
       </div>
       <div class="row">
-        <button class="edit-btn" id="recReload">Actualizar</button>
+        <button class="edit-btn" id="cpClear" title="Quita el color de lo que ya copiaste">Quitar marcas</button><button class="edit-btn" id="recReload">Actualizar</button>
       </div>
     </div>
     <div class="rec-tools">
       <select class="sel" id="recUser" aria-label="Filtrar por usuario"></select>
       <div class="seg" id="recTipo" role="group" aria-label="Qué mostrar">
         <button class="seg-b" data-t="ubicacion" aria-pressed="true">Ubicaciones</button>
+        <button class="seg-b" data-t="escaneo" aria-pressed="false">Escaneos</button>
         <button class="seg-b" data-t="" aria-pressed="false">Todo</button>
       </div>
       <input class="fld sm" id="recQ" type="search" placeholder="Buscar en el registro…" aria-label="Buscar en el registro" autocomplete="off">
     </div>
+    <div id="recCnt" class="rec-cnt"></div>
     <div id="recList"></div>
   </section>
 </main>
@@ -524,6 +631,16 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
   </div>
 </dialog>
 
+<dialog id="resDlg" aria-label="Resumen por auxiliar">
+  <div class="pin-box wide">
+    <h2>Resumen por auxiliar</h2>
+    <div class="seg" id="resSeg" role="group" aria-label="Periodo" style="flex-wrap:wrap"></div>
+    <p class="soft" id="resTotal" aria-live="polite"></p>
+    <div id="resList"></div>
+    <div class="row"><button class="btn" id="resClose">Cerrar</button></div>
+  </div>
+</dialog>
+
 <dialog id="adminDlg" aria-label="Administración">
   <div class="pin-box wide">
     <h2>Administración</h2>
@@ -536,10 +653,24 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
         <input class="sm" id="admU" maxlength="30" autocomplete="off" autocapitalize="off" placeholder="Usuario (sin espacios, ej: juan)" aria-label="Usuario">
         <input class="sm" id="admN" maxlength="60" autocomplete="off" placeholder="Nombre (ej: Juan Pérez)" aria-label="Nombre">
         <input class="sm" id="admC" type="text" autocomplete="off" placeholder="Clave (mínimo 4 caracteres)" aria-label="Clave">
+        <select class="sel" id="admR" aria-label="Perfil" style="width:100%"><option value="auxiliar">Auxiliar de bodega (ubicaciones, muestreos, pedidos)</option><option value="ventas">Sala de ventas (solo catálogo y fotos)</option></select>
         <label class="chk"><input type="checkbox" id="admA" checked> Activo (puede entrar)</label>
         <div class="pin-err" id="admErr" aria-live="polite"></div>
         <div class="row"><button class="btn tape" id="admSave">Guardar auxiliar</button><button class="btn" id="admNew">Limpiar</button></div>
       </div>
+    </div>
+    <div id="admDrv" hidden>
+      <p class="soft">Las fotos se guardan en Drive así: <b>Modelo / Modelo y años / Pieza</b> (ej: Civic / Civic 2016-2018 / Farol) y cada foto se llama como su código.</p>
+      <p class="soft">¿Subes fotos a mano a Drive? Ponle al archivo el código del producto al inicio del nombre (ej: CAP-FDES08-002548N.jpg o CAP-FDES08-002548N_2.jpg) y guárdala en la carpeta de la sucursal o en cualquiera de sus subcarpetas. La web las encuentra sola; aquí puedes buscarlas ya.</p>
+      <select class="sel" id="drvDias" aria-label="Desde cuándo buscar" style="width:100%;margin-top:6px">
+        <option value="">Solo lo nuevo desde la última vez</option>
+        <option value="7">Fotos de los últimos 7 días</option>
+        <option value="30">Fotos de los últimos 30 días</option>
+        <option value="3650">Todas (puede tardar)</option>
+      </select>
+      <div class="row" style="margin-top:10px"><button class="btn tape" id="drvSync">Buscar fotos nuevas en Drive</button></div>
+      <div class="row"><button class="btn" id="drvOrden">Ordenar en carpetas las fotos ya subidas</button></div>
+      <div class="soft" id="drvMsg" aria-live="polite" style="min-height:22px;margin-top:10px"></div>
     </div>
     <div id="admMov" hidden>
       <p class="soft">Copia las fotos (y, si quieres, los productos nuevos) de una sucursal a la otra. Puedes repetirlo cuando agregues productos: solo pasa lo que falta, nunca duplica.</p>
@@ -553,6 +684,16 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
         <option value="todo">Todas las fotos que falten (hasta 4 por producto)</option>
       </select>
       <label class="chk" style="margin-top:10px;display:flex;gap:8px;align-items:center;font-size:14px"><input type="checkbox" id="admAgr" style="width:18px;height:18px;accent-color:var(--violet)"> También agregar los productos que no existan en el destino</label>
+      <select class="sel" id="admSel" aria-label="Qué productos" style="margin-top:10px;width:100%">
+        <option value="todos">Todos los productos con foto</option>
+        <option value="elegir">Elegir productos (ej. solo faroles)</option>
+      </select>
+      <div id="admPick" hidden style="margin-top:10px">
+        <input class="inp" id="admQ" type="search" placeholder="Buscar: farol, civic, bumper…" autocomplete="off" style="width:100%">
+        <label class="chk" style="margin-top:8px;display:flex;gap:8px;align-items:center;font-size:14px"><input type="checkbox" id="admAll" style="width:18px;height:18px;accent-color:var(--violet)"> <span id="admAllT">Marcar todos los mostrados</span></label>
+        <div id="admPL" style="max-height:220px;overflow:auto;margin-top:6px;border:1px solid var(--line,#444);border-radius:10px"></div>
+        <div class="soft" id="admCnt" style="margin-top:6px"></div>
+      </div>
       <div class="soft" id="admMovMsg" aria-live="polite" style="min-height:22px;margin-top:10px"></div>
       <div class="row"><button class="btn" id="admPrev">Ver resumen</button><button class="btn tape" id="admRun">Pasar ahora</button></div>
     </div>
@@ -654,6 +795,7 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
     <input id="locIn" maxlength="40" autocomplete="off" placeholder="Nueva ubicación, ej: 12A1" style="letter-spacing:.05em;text-transform:uppercase" aria-label="Nueva ubicación">
     <div class="qrow"><input id="locQ" class="qin" type="number" inputmode="numeric" min="0" max="999999" placeholder="Cant." aria-label="Cantidad (opcional)"><small>¿Cuántas hay aquí? (opcional)</small></div>
     <div class="pin-err" id="locErr" aria-live="polite"></div>
+    <div id="locShare" class="shnote" hidden></div>
     <div class="row">
       <button class="btn tape" id="locOk">Agregar ubicación</button>
       <button class="btn" id="locNo">Cerrar</button>
@@ -747,8 +889,8 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
 /* =====================================================================
    CONFIGURACIÓN: pega aquí la URL de tu Apps Script (termina en /exec)
    ===================================================================== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbwYIir8k2UKLFBL9hfcrhoPd1Adjlx7Sv5_ork5oQRHrpwNFPMXj14wDVdlKvcBfLFb/exec';
-const SERVER_MIN = 11;   // versión mínima de Code.gs que necesita esta web
+const API_URL = 'https://script.google.com/macros/s/AKfycbx7gYe2GLwYnS83JXUcrsLvJRLc1I7roY9A4m0_7-zq-VNKdbvFx0l2G_XPrQPoD429/exec';
+const SERVER_MIN = 17;   // versión mínima de Code.gs que necesita esta web
 // Sucursales: el "id" debe ser igual al de Code.gs. Cada una tiene SU PROPIA hoja de Google (su catálogo, fotos y ubicaciones).
 // embebido: true = usa el catálogo incluido abajo mientras descarga el de su hoja (solo sirve para una sucursal).
 const SUCURSALES = [
@@ -783,6 +925,9 @@ function toast(msg, ms = 2800) {
 let SES = null, REMEMBER = true;     // sesión: { suc, clave, rol }
 const sucInfo = id => SUCURSALES.find(s => s.id === id) || SUCURSALES[0];
 const isMaster = () => !!SES && SES.rol === 'maestra';
+const isVentas = () => !!SES && SES.rol === 'ventas';
+const isAdmin = () => !!SES && (SES.rol === 'maestra' || SES.rol === 'admin');
+var LOCQ = null;
 const isBase = () => !!SES;   // cada sucursal usa la ubicación original de SU hoja
 function loadSes() {  // (sesiones guardadas antes de los auxiliares no traen usuario: se ignoran si no son del dueño)
   try {
@@ -906,16 +1051,34 @@ function pendRows() {
     if (x.a === 'ubicacion_lote') (x.p.codigos || []).forEach(c => mk(c, x.p.ubicacion, 'agregada'));
     else if (x.a === 'ubicacion_add' || x.a === 'ubicacion') mk(x.p.codigo, x.p.ubicacion, 'agregada');
     else if (x.a === 'ubicacion_del') mk(x.p.codigo, x.p.ubicacion, 'quitada');
+    else if (x.a === 'escaneo') { const it = CODEMAP_get(x.p.codigo); out.push({ t: new Date(x.ts).toISOString(), u: me, tipo: 'escaneo', a: 'solo escaneado', c: x.p.codigo, d: it ? it.d : (x.p.descripcion || x.p.codigo), det: 'Sin cambios', pend: true }); }
   });
   return out.sort((a, b) => (b.t > a.t ? 1 : -1));
 }
-// Copiar con un toque (cualquier botón con data-cp)
+// Copiar con un toque (cualquier botón con data-cp). El botón es un ícono; al copiar cambia de color y
+// se queda marcado (aunque cierres la app) para saber hasta dónde ibas.
+const CPI_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></svg>';
+let COPIED = new Set(), copiedKey = '';
+function copiedLoad() {
+  copiedKey = 'bodega_copiados_' + (SES ? SES.suc + '_' + (SES.usuario || '') : '');
+  try { COPIED = new Set(JSON.parse(localStorage.getItem(copiedKey) || '[]')); } catch (e) { COPIED = new Set(); }
+}
+function copiedSave() { try { localStorage.setItem(copiedKey, JSON.stringify([...COPIED].slice(-4000))); } catch (e) {} }
+// text = lo que se copia; ck = identificador de ESE renglón (para recordar cuál ya copiaste); cls = clase extra
+function cpBtn(text, ck, cls) {
+  const key = ck || ('x|' + text), done = COPIED.has(key);
+  return `<button class="cpi ${cls || ''}${done ? ' done' : ''}" data-cp="${esc(text)}" data-ck="${esc(key)}" aria-label="Copiar ${esc(text)}${done ? ' (ya copiado)' : ''}" title="${done ? 'Ya copiado · toca para copiar otra vez' : 'Copiar'}">${CPI_SVG}</button>`;
+}
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-cp]'); if (!b) return;
   e.preventDefault();
-  const ok = await copyText(b.dataset.cp), old = b.textContent;
-  if (ok) { b.textContent = 'Copiado'; b.classList.add('ok'); setTimeout(() => { b.textContent = old === 'Copiado' ? 'Copiar' : old; b.classList.remove('ok'); }, 1300); }
-  else toast('No se pudo copiar');
+  const ok = await copyText(b.dataset.cp);
+  if (!ok) { toast('No se pudo copiar'); return; }
+  if (b.classList.contains('cpi')) {
+    b.classList.add('done', 'pulse'); setTimeout(() => b.classList.remove('pulse'), 600);
+    const k = b.dataset.ck; if (k) { COPIED.delete(k); COPIED.add(k); copiedSave(); }
+    toast('Copiado: ' + b.dataset.cp, 1400);
+  } else { const old = b.textContent; b.textContent = 'Copiado'; setTimeout(() => { b.textContent = old; }, 1300); }
 });
 
 const thumb = (id, w) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
@@ -1104,6 +1267,8 @@ const grid = $('#grid');
 
 function compute() {
   QT = splitTok(nk(state.q));
+  LOCQ = IDX.length ? locSearch(state.q) : null;
+  if (LOCQ) { LIST = LOCQ.items; return false; }
   const base = IDX.filter(it =>
     (!state.cat || it.cat === state.cat) &&
     (state.foto === 'todos' || (state.foto === 'con' ? hasFoto(it) : !hasFoto(it))));
@@ -1190,7 +1355,7 @@ function refresh() {
     $('#did').innerHTML = `<div class="empty-state"><h2>No encontramos ese producto</h2>
       <p>Prueba con menos palabras, o con el año del vehículo.</p>
       ${alt ? `<p style="margin-top:14px"><button class="chip" data-fix="${esc(alt)}">¿Quisiste decir «${esc(alt)}»?</button></p>` : ''}</div>`;
-  } else $('#did').innerHTML = '';
+  } else $('#did').innerHTML = LOCQ ? locBarHTML() : '';
 }
 
 function buildFilters() {
@@ -1318,7 +1483,7 @@ function drawViewer() {
   $('#vImp').hidden = !(isMaster() && f.length < MAX_FOTOS && SUCURSALES.length > 1);
   $('#vLoc').innerHTML = (cur.ubs || []).length ? cur.ubs.slice().reverse().map((x, k) => `<span class="bin${k ? ' old' : ''}" title="${k ? 'Ubicación anterior' : 'Última ubicación'}">${esc(x.u)}${qTag(x)}</span>`).join(' ') : (EDIT ? '<span class="bin none">Sin ubicación</span>' : '');
   $('#vLocEdit').hidden = !EDIT;
-  if (cur.u) $('#vLoc').insertAdjacentHTML('beforeend', ' <button class="mini" data-cp="' + esc(cur.u) + '">Copiar</button>');
+  if (cur.u) $('#vLoc').insertAdjacentHTML('beforeend', ' ' + cpBtn(cur.u, 'u|' + cur.c + '|' + cur.u));
 }
 $('#vBig').addEventListener('click', e => {
   const f = fotosDe(cur); if (f.length < 2) return;
@@ -1471,11 +1636,11 @@ const fmtWhen = x => { if (!x.t) return 'Ubicación original'; const d = new Dat
 function drawLocList() {
   const L = (locItem.ubs || []).slice().reverse();
   $('#locList').innerHTML = L.length
-    ? L.map((x, k) => `<li><span class="bin">${esc(x.u)}</span>${qTag(x)}<span class="when">${k === 0 ? 'Última · ' : ''}${esc(fmtWhen(x))}</span><button class="mini" data-cp="${esc(x.u)}">Copiar</button><button class="mini" data-qty="${esc(x.u)}">${qOf(x) === null ? 'Poner cantidad' : 'Cambiar cantidad'}</button><button class="mini del" data-del="${esc(x.u)}" aria-label="Quitar la ubicación ${esc(x.u)}">Quitar</button></li>`).join('')
+    ? L.map((x, k) => `<li><span class="bin">${esc(x.u)}</span>${qTag(x)}<span class="when">${k === 0 ? 'Última · ' : ''}${esc(fmtWhen(x))}</span>${cpBtn(x.u, 'u|' + locItem.c + '|' + x.u)}<button class="mini" data-qty="${esc(x.u)}">${qOf(x) === null ? 'Poner cantidad' : 'Cambiar cantidad'}</button><button class="mini del" data-del="${esc(x.u)}" aria-label="Quitar la ubicación ${esc(x.u)}">Quitar</button></li>`).join('')
     : '<li class="none">Este producto no tiene ubicaciones</li>';
 }
 function openLoc(it) {
-  locItem = it; $('#locFor').textContent = it.d; $('#locIn').value = ''; $('#locErr').textContent = '';
+  locItem = it; $('#locFor').textContent = it.d; $('#locShare').hidden = true; $('#locIn').value = ''; $('#locErr').textContent = '';
   drawLocList(); $('#locDlg').showModal(); $('#locIn').focus();
 }
 function setLocs(it, arr) {
@@ -1487,7 +1652,7 @@ function setLocs(it, arr) {
 function logLocal(it, u, a) { if (RECENT) RECENT.unshift({ t: new Date().toISOString(), u: SES.usuario || 'maestra', tipo: 'ubicacion', a, c: it.c, d: it.d, det: u }); }
 const QMSG = 'Sin internet: se guardó en el teléfono y se envía solo cuando vuelva la red';
 const qOf = x => (x && x.q != null) ? x.q : null;
-const qTag = x => qOf(x) !== null ? `<span class="qn" title="Cantidad">×${qOf(x)}</span>` : '';
+const qTag = x => qOf(x) !== null ? `<span class="qn" title="Cantidad en PCS">${qOf(x)} PCS</span>` : '';
 function localAdd(it, u, ts, q) {
   const prev = (it.ubs || []).find(x => x.u === u);
   const L = (it.ubs || []).filter(x => x.u !== u).map(x => [x.u, x.t || '', qOf(x)]);
@@ -1519,10 +1684,12 @@ async function addLoc() {
   try {
     const qt = $('#locQ').value.trim(), qn = qt === '' ? null : Math.round(+qt);
     if (qt !== '' && (isNaN(qn) || qn < 0)) { $('#locErr').textContent = 'La cantidad debe ser un número'; return; }
+    const otros = (locIdx().get(v) || []).filter(i => i.c !== locItem.c); $('#locShare').hidden = true;
     const r = await apiQ('ubicacion_add', qn === null ? { codigo: locItem.c, ubicacion: v } : { codigo: locItem.c, ubicacion: v, cantidad: qn });
     if (!r.ok) throw new Error(r.error || 'Error');
     if (r.queued) { localAdd(locItem, v, undefined, qn === null ? undefined : qn); toast(QMSG, 3800); } else { setLocs(locItem, r.ubs); logLocal(locItem, v, 'agregada'); toast('Ubicación agregada'); }
     $('#locIn').value = ''; $('#locQ').value = ''; $('#locErr').textContent = '';
+    const sh = shareHTML(v, otros); $('#locShare').innerHTML = sh; $('#locShare').hidden = !sh;
   } catch (e) { $('#locErr').textContent = 'No se pudo guardar: ' + e.message; }
 }
 async function delLoc(u) {
@@ -1555,20 +1722,23 @@ $('#vLocEdit').addEventListener('click', () => openLoc(cur));
 /* ---------- Pestañas ---------- */
 let RECENT = null, CODEMAP = null;
 const CODEMAP_get = c => (CODEMAP || (CODEMAP = new Map(IDX.map(i => [i.c, i])))).get(c);
-const VIEWS = ['cat', 'ubi', 'mue', 'rec'];
+const VIEWS = ['cat', 'ubi', 'mue', 'ped', 'rec'];
 function setView(v) {
-  const ids = { cat: 'Cat', ubi: 'Ubi', mue: 'Mue', rec: 'Rec' };
+  const ids = { cat: 'Cat', ubi: 'Ubi', mue: 'Mue', ped: 'Ped', rec: 'Rec' };
   VIEWS.forEach(k => { $('#tab' + ids[k]).setAttribute('aria-selected', k === v); $('#' + k + 'View').hidden = k !== v; });
   $('#catTools').hidden = v !== 'cat';
-  if (v === 'rec') loadRecent();
+  if (v === 'rec') { loadRecent(); loadCnt(); }
   if (v === 'ubi') { renderUbi(); if ($('#ubDet').open) renderLocPanel(); }
   if (v === 'mue') mueTab();
+  if (v === 'ped') pedTab();
 }
 $('#tabUbi').addEventListener('click', () => setView('ubi'));
 $('#tabCat').addEventListener('click', () => setView('cat'));
 $('#tabMue').addEventListener('click', () => setView('mue'));
+$('#tabPed').addEventListener('click', () => setView('ped'));
 $('#tabRec').addEventListener('click', () => setView('rec'));
-$('#recReload').addEventListener('click', () => loadRecent(true));
+$('#recReload').addEventListener('click', () => { loadRecent(true); loadCnt(); });
+$('#cpClear').addEventListener('click', () => { if (!COPIED.size || !confirm('¿Quitar el color de todo lo que ya copiaste?')) return; COPIED.clear(); copiedSave(); document.querySelectorAll('.cpi.done').forEach(b => b.classList.remove('done')); toast('Marcas quitadas', 1800); });
 
 /* ---------- Registro: qué se hizo, quién y cuándo ---------- */
 const REC = { user: '__yo', tipo: 'ubicacion', q: '', users: new Set(), usersLoaded: false, loading: false };
@@ -1578,7 +1748,7 @@ function drawRecTools() {
   const us = [...new Set([...REC.users, me])].sort();
   $('#recUser').innerHTML = `<option value="__yo">Mis registros</option><option value="">Todos los usuarios</option>` +
     us.filter(u => u !== me).map(u => `<option value="${esc(u)}">${esc(u)}</option>`).join('');
-  $('#recUser').value = REC.user;
+  $('#recUser').value = REC.user; $('#recUser').hidden = !isAdmin();
   $('#recTipo').querySelectorAll('[data-t]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === REC.tipo)));
 }
 async function loadRecent(force) {
@@ -1591,12 +1761,11 @@ async function loadRecent(force) {
     if (!REC.usersLoaded) {
       REC.usersLoaded = true;
       try {
-        if (isMaster()) { const u = await apiGet({ action: 'usuarios_lista' }); if (u.ok) (u.usuarios || []).forEach(x => REC.users.add(x.usuario)); REC.users.add('maestra'); }
-        else { const a = await apiGet({ action: 'registro', limite: 300 }); if (a.ok) (a.items || []).forEach(x => REC.users.add(x.u)); }
+        if (isAdmin()) { const u = await apiGet({ action: 'usuarios_lista' }); if (u.ok) (u.usuarios || []).forEach(x => REC.users.add(x.usuario)); REC.users.add('maestra'); REC.users.add('admin'); }
       } catch (e) { REC.usersLoaded = false; }
       drawRecTools();
     }
-    const j = await apiGet({ action: 'registro', filtroUsuario: recFilterUser(), tipo: REC.tipo === 'ubicacion' ? 'ubicacion' : '', texto: REC.q, limite: 400 });
+    const j = await apiGet({ action: 'registro', filtroUsuario: recFilterUser(), tipo: REC.tipo, texto: REC.q, limite: 400 });
     if (tok !== REC.loading) return;
     if (!j.ok) throw new Error(j.error || 'Error');
     RECENT = j.items || []; RECENT.forEach(r => REC.users.add(r.u));
@@ -1606,7 +1775,27 @@ async function loadRecent(force) {
   }
   renderRecent();
 }
-$('#recUser').addEventListener('change', e => { REC.user = e.target.value; RECENT = null; loadRecent(); });
+$('#recUser').addEventListener('change', e => { REC.user = e.target.value; RECENT = null; loadRecent(); loadCnt(); });
+REC.per = 'hoy';
+function recRango() {
+  const n = new Date(), h0 = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  if (REC.per === 'hoy') return { desde: h0.toISOString() };
+  if (REC.per === 'sem') return { desde: new Date(h0.getTime() - 6 * 86400000).toISOString() };
+  return {};
+}
+async function loadCnt() {
+  const box = $('#recCnt'); if (!API_URL) { box.innerHTML = ''; return; }
+  const seg = `<div class="seg" id="recPer" role="group" aria-label="Período del conteo">${[['hoy', 'Hoy'], ['sem', '7 días'], ['todo', 'Todo']].map(([k, t]) => `<button class="seg-b" data-p="${k}" aria-pressed="${REC.per === k}">${t}</button>`).join('')}</div>`;
+  const tok = REC.cntTok = (REC.cntTok || 0) + 1;
+  try {
+    const j = await apiGet({ action: 'registro_conteo', filtroUsuario: recFilterUser(), ...recRango() });
+    if (tok !== REC.cntTok) return; if (!j.ok) throw new Error('x');
+    const us = j.usuarios || [];
+    box.innerHTML = `<div class="soft" style="margin:6px 0">Conteo de códigos distintos por usuario</div>${seg}` + (us.length ? us.map(u => { const d = new Date(u.ultimo);
+      return `<div class="admrow" style="flex-wrap:wrap;gap:4px 10px"><div><b>${esc(u.u)}</b> <small style="color:var(--mute)">último: ${fFecha(d)} ${esc(fHora(d))}</small></div><div><span class="tag">${u.escaneados} escaneados</span> <span class="tag good">${u.registrados} registrados</span></div></div>`; }).join('') : '<p class="soft">Sin escaneos ni registros en este período.</p>');
+  } catch (e) { if (tok === REC.cntTok) box.innerHTML = ''; }
+}
+$('#recCnt').addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (!b) return; REC.per = b.dataset.p; loadCnt(); });
 $('#recTipo').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; REC.tipo = b.dataset.t; RECENT = null; loadRecent(); });
 let recT; $('#recQ').addEventListener('input', e => { clearTimeout(recT); recT = setTimeout(() => { REC.q = e.target.value.trim(); RECENT = null; loadRecent(); }, 400); });
 async function copyText(s) {
@@ -1624,7 +1813,7 @@ let RECROWS = [];
 function renderRecent(failed) {
   const box = $('#recList');
   const yo = SES.usuario || 'maestra', fu = recFilterUser();
-  let pend = pendRows().filter(r => (!fu || r.u === fu) && (REC.tipo !== 'ubicacion' || r.tipo === 'ubicacion'));
+  let pend = pendRows().filter(r => (!fu || r.u === fu) && (!REC.tipo || r.tipo === REC.tipo));
   const q = nk(REC.q || ''); if (q) pend = pend.filter(r => nk(r.d + ' ' + r.c + ' ' + r.det).includes(q));
   RECROWS = pend.concat(failed ? [] : (RECENT || []));
   if (!RECROWS.length) {
@@ -1637,16 +1826,17 @@ function renderRecent(failed) {
   RECROWS.forEach((r, k) => {
     const d = new Date(r.t); if (isNaN(d)) return;
     const esUb = r.tipo === 'ubicacion';
-    const dp = esUb ? String(r.det || '').split(' · ') : [], dloc = dp[0] || '', dqty = dp[1] ? `<span class="qn">${esc(dp[1].replace(/ pzas$/, ' pzas'))}</span>` : '';
+    const dp = esUb ? String(r.det || '').split(' · ') : [], dloc = dp[0] || '', dqty = dp[1] ? `<span class="qn">${esc(dp[1].replace(/ pzas$/i, ' PCS'))}</span>` : '';
     const chg = esUb
       ? (r.a === 'quitada' ? `<span class="tag bad">Quitada</span><span class="bin gone">${esc(dloc)}</span>` : r.a === 'cantidad' ? `<span class="tag">Cantidad</span><span class="bin">${esc(dloc)}${dqty}</span>` : `<span class="tag good">Agregada</span><span class="bin">${esc(dloc)}${dqty}</span>`)
+      : r.tipo === 'escaneo' ? `<span class="tag">Solo escaneado</span><small style="color:var(--mute)">Sin cambios</small>`
       : `<span class="tag">${esc(r.tipo)} · ${esc(r.a)}</span>${r.det ? `<small style="color:var(--mute)">${esc(r.det)}</small>` : ''}`;
     html += `<div class="rrow">
       <span class="l-when"><span class="l-date">${fFecha(d)}</span></span><span class="l-time">${esc(fHora(d))}</span>
       <button class="l-prod" data-k="${k}"><b>${esc(r.d || r.c || '')}</b><small>${esc(r.c || '')}</small></button>
       <span class="l-chg">${chg}${r.pend ? '<span class="tag warn">Sin enviar</span>' : ''}</span>
       <span class="uchip" title="Quién lo hizo">${esc(r.u)}</span>
-      ${esUb && dloc ? `<button class="copy" data-cp="${esc(dloc)}" aria-label="Copiar la ubicación ${esc(dloc)}">Copiar</button>` : '<span></span>'}
+      ${esUb && dloc ? `${cpBtn(dloc, 'r|' + r.t + '|' + r.c + '|' + dloc, 'copy')}` : '<span></span>'}
     </div>`;
   });
   box.innerHTML = html + '</div>';
@@ -1834,6 +2024,7 @@ $('#editBtn').addEventListener('click', () => setEdit(!EDIT));
    Sincronización con la nube
 ---------------------------------------------------------------------- */
 let SYNC_TOK = 0;
+let lastDriveSync = 0;
 async function sync() {
   const s = $('#sync'), tok = ++SYNC_TOK, live = () => tok === SYNC_TOK && !!SES, nombre = sucInfo(SES.suc).nombre;
   if (!API_URL) {
@@ -1852,7 +2043,7 @@ async function sync() {
     s.textContent = '';
     refresh();
   } catch (e) { if (!live()) return; s.textContent = 'Sin conexión con la nube'; }
-  try {
+  if (!isVentas()) try {
     const u = await apiGet({ action: 'ubicaciones' });
     if (!live()) return;
     if (!u.ok) throw new Error(u.error);
@@ -1861,6 +2052,13 @@ async function sync() {
     if (state.q) refresh(); else repaintCards();
     paintCount();
   } catch (e) { if (!live()) return; $('#sync').textContent = 'No se pudieron cargar las ubicaciones'; }
+  if (navigator.onLine !== false && Date.now() - lastDriveSync > 180000) {
+    lastDriveSync = Date.now();
+    try {
+      const d = await apiPost('drive_sync', {});
+      if (live() && d && d.ok && d.nuevas > 0) { const j2 = await apiGet({ action: 'list' }); if (live() && j2.ok) { PHOTOS = j2.fotos || {}; savePhotosCache(); refresh(); toast(d.nuevas + (d.nuevas === 1 ? ' foto nueva desde Drive' : ' fotos nuevas desde Drive'), 3500); } }
+    } catch (e) {}
+  }
   try { const v = await apiGet({ action: 'version' }); if (!live()) return; SERVER_OK = !!(v && v.ok && v.version >= SERVER_MIN); } catch (e) { if (!live()) return; }
   warnServer();
   // catálogo de ESTA sucursal, desde su propia hoja PRODUCTOS
@@ -1977,7 +2175,10 @@ function onScan(text) {
   const v = String(text).replace(/\s+/g, ' ').trim().slice(0, 200);
   state.foto = 'todos'; state.cat = ''; buildFilters(); setView('cat');
   $('#q').value = v; state.q = v; refresh();
-  toast('Código leído: ' + v, 3200);
+  const it = CODEMAP_get(v);
+  if (it && isVentas()) toast('Código leído: ' + v, 3200);
+  else if (it) { toast('Escaneado: ' + v + ' · solo se consultó, no se cambió nada', 3800); apiQ('escaneo', { codigo: it.c, descripcion: it.d }).catch(() => {}); }
+  else toast('Código leído: ' + v, 3200);
 }
 function stopScanCam() {
   sc.running = false; clearTimeout(sc.timer);
@@ -2178,6 +2379,12 @@ function locIdx() {
   IDX.forEach(it => (it.ubs || []).forEach(x => { if (!m.has(x.u)) m.set(x.u, []); m.get(x.u).push(it); }));
   return (UBI.locIdx = m);
 }
+// Aviso: qué otros productos ya estaban en esa ubicación (solo si comparten ubicación)
+function shareHTML(loc, otros) {
+  if (!otros.length) return '';
+  const lista = otros.slice(0, 8).map(i => `<li>${esc(i.d)} <small style="color:var(--mute)">${esc(i.c)}</small></li>`).join('');
+  return `<b>En ${esc(loc)} ya ${otros.length === 1 ? 'está 1 producto' : 'están ' + otros.length + ' productos'}:</b><ul style="margin:4px 0 0 18px;padding:0">${lista}</ul>` + (otros.length > 8 ? `<div>…y ${otros.length - 8} más</div>` : '');
+}
 const locCount = loc => (locIdx().get(loc) || []).length;
 const pendCount = loc => UBI.rows.filter(r => r.st === 'pend' && (!loc || r.loc === loc)).length;
 const plural = (n, a, b) => `${n} ${n === 1 ? a : b}`;
@@ -2227,7 +2434,7 @@ function renderUbi() {
   if (pend.length) {
     h += `<div class="ubhead"><h3>Por guardar</h3><span class="cntbadge new">${pend.length}</span></div>`;
     byLoc.forEach((rows, loc) => {
-      h += `<div class="ubgroup"><div class="ubgh"><span class="bin">${esc(loc)}</span><button class="mini" data-cp="${esc(loc)}">Copiar</button>` +
+      h += `<div class="ubgroup"><div class="ubgh"><span class="bin">${esc(loc)}</span>${cpBtn(loc, 'g|' + loc)}` +
         `<span class="cntbadge" title="Productos que ya están guardados en esta ubicación">${locCount(loc)} ya en ${esc(loc)}</span>` +
         `<span class="cntbadge new" title="Productos por guardar">+${rows.length}</span></div>` +
         rows.map(r => `<div class="ubrow"><div><b>${esc(r.it.d)}</b><small>${esc(r.it.c)}</small></div><input class="qin" type="number" inputmode="numeric" min="0" max="999999" data-qr="${r.id}" value="${r.cant != null ? r.cant : ''}" placeholder="Cant." aria-label="Cantidad de ${esc(r.it.d)} (opcional)"><button class="mini" data-rm="${r.id}" aria-label="Quitar de la lista">Quitar</button></div>`).join('') + '</div>';
@@ -2236,11 +2443,12 @@ function renderUbi() {
   }
   if (res.length) {
     const n = { ok: 0, dup: 0, bad: 0 }; res.forEach(r => { if (r.st === 'ok') n.ok++; else if (r.st === 'dup') n.dup++; else if (r.st === 'nf' || r.st === 'err') n.bad++; });
+    Object.keys(UBI.notes || {}).forEach(loc => { const sh = shareHTML(loc, UBI.notes[loc]); if (sh) h += `<div class="shnote">${sh}</div>`; });
     h += `<div class="ubhead"><h3>Resultado</h3><span class="tag good">${n.ok} guardados</span><span class="tag warn">${n.dup} ya estaban</span>${n.bad ? `<span class="tag bad">${n.bad} con problema</span>` : ''}<span class="grow"></span><button class="mini" id="ubClear">Limpiar</button></div>`;
     h += res.map(r => {
       const cls = r.st === 'dup' ? ' dup' : (r.st === 'nf' || r.st === 'err') ? ' bad' : '';
       let st = '';
-      if (r.st === 'ok') st = `<span class="tag good">Guardada</span>${r.q ? '<span class="tag warn">Sin enviar</span>' : ''}<span class="bin">${esc(r.loc)}${r.cant != null ? `<span class="qn">×${r.cant}</span>` : ''}</span><button class="mini" data-cp="${esc(r.loc)}">Copiar</button><button class="mini" data-undo="${r.id}">Deshacer</button>`;
+      if (r.st === 'ok') st = `<span class="tag good">Guardada</span>${r.q ? '<span class="tag warn">Sin enviar</span>' : ''}<span class="bin">${esc(r.loc)}${r.cant != null ? `<span class="qn">${r.cant} PCS</span>` : ''}</span>${cpBtn(r.loc, 'g|' + r.loc)}<button class="mini" data-undo="${r.id}">Deshacer</button>`;
       else if (r.st === 'dup') st = `<span class="tag warn">Ya estaba aquí</span><span class="bin">${esc(r.loc)}</span>${r.principal ? '<small style="margin:0">es la principal</small>' : `<button class="mini" data-main="${r.id}">Hacer principal</button>`}<button class="mini" data-rm="${r.id}">Quitar aviso</button>`;
       else if (r.st === 'undone') st = `<span class="tag">Deshecha</span><span class="bin gone">${esc(r.loc)}</span>`;
       else if (r.st === 'nf') st = `<span class="tag bad">No está en el catálogo</span><button class="mini" data-rm="${r.id}">Quitar aviso</button>`;
@@ -2255,6 +2463,7 @@ function renderUbi() {
 async function guardarLista() {
   const pend = UBI.rows.filter(r => r.st === 'pend'); if (!pend.length) return;
   const byLoc = {}; pend.forEach(r => { (byLoc[r.loc] = byLoc[r.loc] || []).push(r); });
+  UBI.notes = {}; Object.keys(byLoc).forEach(loc => { const mine = new Set(byLoc[loc].map(r => r.it.c)); UBI.notes[loc] = (locIdx().get(loc) || []).filter(i => !mine.has(i.c)); });
   const b = $('#ubSave'), msg = $('#ubSaveMsg'); if (b) b.disabled = true; if (msg) msg.textContent = 'Guardando…';
   let ok = 0, dup = 0, bad = 0, q = 0;
   try {
@@ -2445,7 +2654,7 @@ async function doLogin() {
   $('#loginErr').textContent = 'Verificando…';
   try {
     const j = await rawPost({ action: 'login', suc: loginSuc, usuario, clave });
-    if (!j.ok) throw new Error(j.error || 'Usuario o clave incorrectos');
+    if (!j.ok) { if (j.otra && SUCURSALES.some(x => x.id === j.otra)) { loginSuc = j.otra; drawLoginSeg(); $('#loginErr').textContent = j.error.replace(/Elige .* arriba y vuelve a entrar\./, 'Ya la elegí arriba: toca Entrar.'); return; } throw new Error(j.error || 'Usuario o clave incorrectos'); }
     REMEMBER = $('#loginRec').checked; SES = { suc: loginSuc, clave, rol: j.rol, usuario: j.usuario, nombre: j.nombre }; saveSes();
     $('#loginDlg').close(); enterApp();
   } catch (e) {
@@ -2460,9 +2669,10 @@ $('#loginClave').addEventListener('keydown', e => { if (e.key === 'Enter') doLog
 $('#loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginClave').focus(); });
 function enterApp() {
   document.body.classList.remove('locked');
-  $('#sucName').textContent = sucInfo(SES.suc).nombre + (isMaster() ? '' : ' · ' + (SES.nombre || SES.usuario));
-  $('#adminBtn').hidden = !isMaster();
-  OUT.items = []; OUT.key = ''; mueLoadLocal(); REC.user = isMaster() ? '' : '__yo'; REC.users = new Set(); REC.usersLoaded = false; REC.q = ''; $('#recQ').value = ''; CODEMAP = null;
+  $('#sucName').textContent = sucInfo(SES.suc).nombre + (isMaster() ? '' : ' · ' + (SES.nombre || SES.usuario));   // el administrador de sucursal también muestra su nombre
+  $('#adminBtn').hidden = !isAdmin(); $('#resBtn').hidden = !isAdmin();
+  document.body.classList.toggle('ventas', isVentas());
+  OUT.items = []; OUT.key = ''; mueLoadLocal(); REC.user = isAdmin() ? '' : '__yo'; pedLoadCache(); LOCQ = null; copiedLoad(); REC.users = new Set(); REC.usersLoaded = false; REC.q = ''; $('#recQ').value = ''; CODEMAP = null;
   $('#sessBtn').textContent = isMaster() ? 'Cambiar sucursal' : 'Salir';
   loadCaches(); loadCatalog(); RECENT = null; SERVER_OK = null; NCMAP = new Map(); UBI.rows = [];
   state.q = ''; $('#q').value = ''; state.foto = 'todos'; state.cat = ''; buildFilters();
@@ -2524,7 +2734,7 @@ async function mueLoadRemote() {
   try {
     const j = await apiGet({ action: 'muestreos' });
     if (j.ok) MUE.remote = j.items || [];
-    if (isMaster() && !MUE.users.length) { const u = await apiGet({ action: 'usuarios_lista' }); if (u.ok) MUE.users = ['maestra'].concat((u.usuarios || []).map(x => x.usuario)); }
+    if (isAdmin() && !MUE.users.length) { const u = await apiGet({ action: 'usuarios_lista' }); if (u.ok) MUE.users = ['maestra', 'admin'].concat((u.usuarios || []).map(x => x.usuario)); }
   } catch (e) {}
   MUE.loadedOnce = true; drawMueList();
 }
@@ -2536,14 +2746,14 @@ function mueRows() {
   const have = new Set(mine.map(x => x.id));
   const rem = MUE.remote.filter(h => !have.has(h.id)).map(h => ({ id: h.id, nombre: h.nombre, usuario: h.usuario, estado: h.estado, mod: Date.parse(h.mod) || 0, total: h.total, rev: h.revisados, fa: h.faltantes, pe: h.total - h.revisados, dirty: false }));
   let all = mine.concat(rem);
-  if (isMaster()) { if (MUE.user) all = all.filter(x => x.usuario === MUE.user); }
+  if (isAdmin()) { if (MUE.user) all = all.filter(x => x.usuario === MUE.user); }
   else all = all.filter(x => x.usuario === SES.usuario);
   return all.sort((a, b) => b.mod - a.mod);
 }
 function drawMueList() {
   if (!SES || $('#mueListBox').hidden) return;
-  const sel = $('#mueUser'); sel.hidden = !isMaster();
-  if (isMaster()) {
+  const sel = $('#mueUser'); sel.hidden = !isAdmin();
+  if (isAdmin()) {
     const us = [...new Set(['maestra'].concat(MUE.users, Object.values(LMUE).map(m => m.usuario), MUE.remote.map(x => x.usuario)))].filter(Boolean);
     sel.innerHTML = '<option value="">Todos los auxiliares</option>' + us.map(u => `<option value="${esc(u)}">${esc(u === 'maestra' ? 'Dueño (maestra)' : u)}</option>`).join('');
     sel.value = MUE.user;
@@ -2599,7 +2809,7 @@ function drawMueDet() {
   const s = mueStats(m), pct = s.total ? Math.round(s.rev * 100 / s.total) : 0;
   $('#mueTitle').textContent = m.nombre; drawMueSub();
   $('#muePbar').style.width = pct + '%';
-  $('#mueStats').innerHTML = `<span class="tag good">${s.ok} encontrados</span><span class="tag bad">${s.fa} faltantes</span><span class="tag">${s.pe} pendientes</span>${s.pz ? `<span class="tag good">${s.pz} piezas contadas</span>` : ''}<b>${pct}%</b>`;
+  $('#mueStats').innerHTML = `<span class="tag good">${s.ok} encontrados</span><span class="tag bad">${s.fa} faltantes</span><span class="tag">${s.pe} pendientes</span>${s.pz ? `<span class="tag good">${s.pz} PCS contadas</span>` : ''}<b>${pct}%</b>`;
   $('#mueClose').textContent = m.estado === 'cerrado' ? 'Reabrir muestreo' : 'Cerrar muestreo';
   $('#mueSeg').innerHTML = [['pend', 'Pendientes', s.pe], ['ok', 'Encontrados', s.ok], ['falta', 'Faltantes', s.fa], ['todos', 'Todos', s.total]]
     .map(([k, t, n]) => `<button class="seg-b" data-f="${k}" aria-pressed="${MUE.filt === k}">${t} ${n}</button>`).join('');
@@ -2611,8 +2821,8 @@ function drawMueDet() {
     const bins = it && it.ubs && it.ubs.length ? it.ubs.slice().reverse().slice(0, 3).map((b, k) => `<span class="bin${k ? ' old' : ''}">${esc(b.u)}</span>`).join('') : '<span class="bin none">Sin ubicación</span>';
     const acts = x.e === 'pend'
       ? `<button class="mb ok" data-me="ok" data-c="${esc(x.c)}">Está</button><button class="mb bad" data-me="falta" data-c="${esc(x.c)}">Falta</button>`
-      : `<span class="tag ${x.e === 'ok' ? 'good' : 'bad'}">${x.e === 'ok' ? 'Encontrado' + (x.q != null ? ' · ' + x.q + ' pzas' : '') : 'Faltante'}</span>${x.e === 'ok' ? `<button class="mini" data-mq="${esc(x.c)}">${x.q != null ? 'Cambiar cantidad' : 'Poner cantidad'}</button>` : ''}<button class="mini" data-me="pend" data-c="${esc(x.c)}">Deshacer</button>`;
-    return `<div class="mit"><div><b>${esc(it ? it.d : x.c)}</b><small>${esc(x.c)}</small><div class="bins">${bins}${ub ? `<button class="mini" data-cp="${esc(ub)}">Copiar</button>` : ''}</div></div><div class="acts">${acts}</div></div>`;
+      : `<span class="tag ${x.e === 'ok' ? 'good' : 'bad'}">${x.e === 'ok' ? 'Encontrado' + (x.q != null ? ' · ' + x.q + ' PCS' : '') : 'Faltante'}</span>${x.e === 'ok' ? `<button class="mini" data-mq="${esc(x.c)}">${x.q != null ? 'Cambiar cantidad' : 'Poner cantidad'}</button>` : ''}<button class="mini" data-me="pend" data-c="${esc(x.c)}">Deshacer</button>`;
+    return `<div class="mit"><div><b>${esc(it ? it.d : x.c)}</b><small>${esc(x.c)}</small><div class="bins">${bins}${ub ? `${cpBtn(ub, 'm|' + m.id + '|' + x.c)}` : ''}</div></div><div class="acts">${acts}</div></div>`;
   }).join('') + '</div>' : `<div class="empty-state"><h2>${MUE.filt === 'pend' ? (s.total ? '¡No quedan pendientes!' : 'Muestreo vacío') : 'Nada por aquí'}</h2></div>`;
   $('#mueMore').hidden = list.length <= MUE.show;
 }
@@ -2716,15 +2926,16 @@ $('#mnOk').addEventListener('click', () => {
 /* ---------- Menú Admin (solo clave maestra): auxiliares y pasar fotos/productos entre sucursales ---------- */
 const ADM = { suc: '', tab: 'usr', users: [], o: '', d: '', busy: false };
 function openAdmin() {
-  if (!isMaster()) return;
+  if (!isAdmin()) return;
   if (navigator.onLine === false) { toast('El menú Admin necesita internet', 3500); return; }
   ADM.suc = SES.suc; ADM.tab = 'usr';
   ADM.o = SUCURSALES[0].id; ADM.d = (SUCURSALES[1] || SUCURSALES[0]).id;
   drawAdm(); $('#adminDlg').showModal(); admLoad(); admClear();
 }
 function drawAdm() {
-  $('#admTabs').innerHTML = [['usr', 'Auxiliares'], ['mov', 'Pasar fotos y productos']].map(([k, t]) => `<button class="seg-b" data-t="${k}" aria-pressed="${ADM.tab === k}">${t}</button>`).join('');
-  $('#admUsr').hidden = ADM.tab !== 'usr'; $('#admMov').hidden = ADM.tab !== 'mov';
+  $('#admTabs').innerHTML = (isMaster() ? [['usr', 'Auxiliares'], ['drv', 'Drive'], ['mov', 'Pasar fotos y productos']] : [['usr', 'Auxiliares'], ['drv', 'Drive']]).map(([k, t]) => `<button class="seg-b" data-t="${k}" aria-pressed="${ADM.tab === k}">${t}</button>`).join('');
+  $('#admUsr').hidden = ADM.tab !== 'usr'; $('#admMov').hidden = ADM.tab !== 'mov'; $('#admDrv').hidden = ADM.tab !== 'drv';
+  $('#admSuc').hidden = !isMaster();
   $('#admSuc').innerHTML = SUCURSALES.map(s => `<button class="seg-b" data-s="${s.id}" aria-pressed="${s.id === ADM.suc}">${esc(s.nombre)}</button>`).join('');
   const opts = v => SUCURSALES.map(s => `<option value="${s.id}"${s.id === v ? ' selected' : ''}>${esc(s.nombre)}</option>`).join('');
   $('#admO').innerHTML = opts(ADM.o); $('#admD').innerHTML = opts(ADM.d);
@@ -2734,20 +2945,20 @@ $('#admSuc').addEventListener('click', e => { const b = e.target.closest('[data-
 $('#admO').addEventListener('change', e => { ADM.o = e.target.value; });
 $('#admD').addEventListener('change', e => { ADM.d = e.target.value; });
 $('#admSwap').addEventListener('click', () => { const t = ADM.o; ADM.o = ADM.d; ADM.d = t; drawAdm(); $('#admMovMsg').textContent = ''; });
-function admClear() { $('#admU').value = ''; $('#admN').value = ''; $('#admC').value = ''; $('#admA').checked = true; $('#admU').readOnly = false; $('#admErr').textContent = ''; $('#admC').placeholder = 'Clave (mínimo 4 caracteres)'; }
+function admClear() { $('#admU').value = ''; $('#admN').value = ''; $('#admC').value = ''; $('#admA').checked = true; $('#admR').value = 'auxiliar'; $('#admU').readOnly = false; $('#admErr').textContent = ''; $('#admC').placeholder = 'Clave (mínimo 4 caracteres)'; }
 async function admLoad() {
   const box = $('#admList'); box.innerHTML = '<p class="soft">Cargando…</p>';
   try {
     const j = await apiAs(ADM.suc, 'usuarios_lista'); if (!j.ok) throw new Error(j.error || 'Error');
     ADM.users = j.usuarios || [];
-    box.innerHTML = ADM.users.length ? ADM.users.map(u => `<div class="admrow"><div><b>${esc(u.nombre || u.usuario)}</b> <small style="color:var(--mute)">${esc(u.usuario)}</small> <span class="tag ${u.activo ? 'good' : 'bad'}">${u.activo ? 'Activo' : 'Desactivado'}</span></div><button class="mini" data-edit="${esc(u.usuario)}">Editar</button></div>`).join('')
+    box.innerHTML = ADM.users.length ? ADM.users.map(u => `<div class="admrow"><div><b>${esc(u.nombre || u.usuario)}</b> <small style="color:var(--mute)">${esc(u.usuario)}</small>${u.rol === 'ventas' ? ' <span class="tag">Sala de ventas</span>' : ''} <span class="tag ${u.activo ? 'good' : 'bad'}">${u.activo ? 'Activo' : 'Desactivado'}</span></div><button class="mini" data-edit="${esc(u.usuario)}">Editar</button></div>`).join('')
       : `<p class="soft">Todavía no hay auxiliares en ${esc(sucInfo(ADM.suc).nombre)}. Crea el primero abajo.</p>`;
   } catch (e) { box.innerHTML = `<p class="soft">No se pudo cargar: ${esc(e.message)}</p>`; }
 }
 $('#admList').addEventListener('click', e => {
   const b = e.target.closest('[data-edit]'); if (!b) return;
   const u = ADM.users.find(x => x.usuario === b.dataset.edit); if (!u) return;
-  $('#admU').value = u.usuario; $('#admU').readOnly = true; $('#admN').value = u.nombre || ''; $('#admC').value = ''; $('#admA').checked = u.activo;
+  $('#admU').value = u.usuario; $('#admU').readOnly = true; $('#admN').value = u.nombre || ''; $('#admC').value = ''; $('#admA').checked = u.activo; $('#admR').value = u.rol === 'ventas' ? 'ventas' : 'auxiliar';
   $('#admC').placeholder = 'Nueva clave (vacío = no cambiar)'; $('#admErr').textContent = 'Editando a ' + u.usuario; $('#admN').focus();
 });
 $('#admNew').addEventListener('click', admClear);
@@ -2756,15 +2967,44 @@ $('#admSave').addEventListener('click', async () => {
   if (!usuario) { $('#admErr').textContent = 'Escribe el usuario (sin espacios, ej: juan)'; return; }
   $('#admErr').textContent = 'Guardando…';
   try {
-    const j = await apiAs(ADM.suc, 'usuario_guardar', { nuevoUsuario: usuario, nombreNuevo: nombre || usuario, claveNueva: clave, activoNuevo: activo });
+    const j = await apiAs(ADM.suc, 'usuario_guardar', { nuevoUsuario: usuario, nombreNuevo: nombre || usuario, claveNueva: clave, activoNuevo: activo, rolNuevo: $('#admR').value });
     if (!j.ok) throw new Error(j.error || 'Error');
     toast('Auxiliar guardado en ' + sucInfo(ADM.suc).nombre); admClear(); admLoad();
   } catch (e) { $('#admErr').textContent = e instanceof NetErr ? 'Sin internet' : e.message; }
 });
 $('#admNo').addEventListener('click', () => $('#adminDlg').close());
-function admParams() { return { origen: ADM.o, destino: ADM.d, modo: $('#admModo').value, agregarFaltantes: $('#admAgr').checked }; }
+function admParams() {
+  const p = { origen: ADM.o, destino: ADM.d, modo: $('#admModo').value, agregarFaltantes: $('#admAgr').checked };
+  if ($('#admSel').value === 'elegir') p.codigos = [...ADM.pick];
+  return p;
+}
+ADM.pick = new Set(); ADM.items = []; ADM.vis = [];
+function admPickDraw() {
+  const toks = nk($('#admQ').value).split(/\s+/).filter(Boolean);
+  ADM.vis = ADM.items.filter(x => { const t = nk(x.d + ' ' + x.c); return toks.every(k => t.includes(k)); });
+  const shown = ADM.vis.slice(0, 200);
+  $('#admPL').innerHTML = shown.map(x => `<label style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-bottom:1px solid rgba(128,128,128,.2);font-size:13px"><input type="checkbox" data-c="${esc(x.c)}" ${ADM.pick.has(x.c) ? 'checked' : ''} style="width:18px;height:18px;margin-top:1px;flex:none;accent-color:var(--violet)"><span style="min-width:0;overflow-wrap:anywhere">${esc(x.d)} <small style="color:var(--mute)">${esc(x.c)} · ${x.n} foto(s)${x.nd ? ' · ya tiene ' + x.nd + ' allá' : ''}${x.en ? '' : ' · no está en destino'}</small></span></label>`).join('') || '<p class="soft" style="padding:10px">Sin resultados</p>';
+  $('#admAllT').textContent = `Marcar los ${ADM.vis.length} mostrados`;
+  $('#admAll').checked = ADM.vis.length > 0 && ADM.vis.every(x => ADM.pick.has(x.c));
+  $('#admCnt').textContent = `${ADM.pick.size} producto(s) elegidos de ${ADM.items.length} con foto` + (ADM.vis.length > 200 ? ' · mostrando los primeros 200 (usa el buscador)' : '');
+}
+async function admPickLoad() {
+  const m = $('#admMovMsg'); if (ADM.o === ADM.d) { m.textContent = 'Elige dos sucursales distintas'; return; }
+  m.textContent = 'Cargando productos con foto…'; ADM.pick = new Set();
+  try {
+    const j = await apiPost('transfer_lista', { origen: ADM.o, destino: ADM.d }); if (!j.ok) throw new Error(j.error || 'Error');
+    ADM.items = j.items || []; m.textContent = ''; admPickDraw();
+  } catch (e) { m.textContent = e instanceof NetErr ? 'Sin internet' : e.message; }
+}
+$('#admSel').addEventListener('change', () => { const e = $('#admSel').value === 'elegir'; $('#admPick').hidden = !e; if (e) admPickLoad(); });
+$('#admO').addEventListener('change', () => { if ($('#admSel').value === 'elegir') admPickLoad(); });
+$('#admD').addEventListener('change', () => { if ($('#admSel').value === 'elegir') admPickLoad(); });
+$('#admQ').addEventListener('input', admPickDraw);
+$('#admAll').addEventListener('change', e => { ADM.vis.forEach(x => e.target.checked ? ADM.pick.add(x.c) : ADM.pick.delete(x.c)); admPickDraw(); });
+$('#admPL').addEventListener('change', e => { const c = e.target.dataset.c; if (!c) return; e.target.checked ? ADM.pick.add(c) : ADM.pick.delete(c); admPickDraw(); });
 $('#admPrev').addEventListener('click', async () => {
   const m = $('#admMovMsg'); if (ADM.o === ADM.d) { m.textContent = 'Elige dos sucursales distintas'; return; }
+  if ($('#admSel').value === 'elegir' && !ADM.pick.size) { m.textContent = 'Marca al menos un producto'; return; }
   m.textContent = 'Calculando…';
   try {
     const j = await apiPost('transfer_preview', admParams()); if (!j.ok) throw new Error(j.error || 'Error');
@@ -2777,6 +3017,7 @@ $('#admPrev').addEventListener('click', async () => {
 $('#admRun').addEventListener('click', async () => {
   const m = $('#admMovMsg'); if (ADM.busy) return;
   if (ADM.o === ADM.d) { m.textContent = 'Elige dos sucursales distintas'; return; }
+  if ($('#admSel').value === 'elegir' && !ADM.pick.size) { m.textContent = 'Marca al menos un producto'; return; }
   if (!confirm(`¿Pasar de ${sucInfo(ADM.o).nombre} a ${sucInfo(ADM.d).nombre}? Solo se copia lo que falta; nada se borra ni se duplica.`)) return;
   ADM.busy = true; $('#admRun').disabled = true; let total = 0, prod = 0, errs = 0;
   try {
@@ -2791,9 +3032,335 @@ $('#admRun').addEventListener('click', async () => {
   } catch (e) { m.textContent = (e instanceof NetErr ? 'Se cortó el internet' : e.message) + `. Llevas ${total} fotos copiadas: vuelve a tocar «Pasar ahora» para seguir.`; }
   ADM.busy = false; $('#admRun').disabled = false;
 });
+async function drvRefreshPhotos() { const j = await apiGet({ action: 'list' }); if (j.ok) { PHOTOS = j.fotos || {}; savePhotosCache(); refresh(); } }
+$('#drvSync').addEventListener('click', async () => {
+  const m = $('#drvMsg'), b = $('#drvSync'); b.disabled = true; m.textContent = 'Buscando en Drive…';
+  try {
+    const dias = +$('#drvDias').value || 0;
+    const j = await apiPost('drive_sync', dias ? { dias, forzar: true } : { forzar: true });
+    if (!j.ok) throw new Error(j.error || 'Error');
+    if (j.nuevas) await drvRefreshPhotos();
+    m.textContent = (j.nuevas ? `Listo: ${j.nuevas} ${j.nuevas === 1 ? 'foto nueva' : 'fotos nuevas'} en la web.` : 'No hay fotos nuevas con el código en el nombre.') + (j.completo === false ? ' Todavía quedan por revisar: toca otra vez.' : '') + ` (${j.revisadas || 0} archivos revisados)`;
+  } catch (e) { m.textContent = 'No se pudo: ' + e.message; }
+  b.disabled = false;
+});
+$('#drvOrden').addEventListener('click', async () => {
+  if (!confirm('Esto mueve y renombra las fotos ya subidas dentro de Drive (Modelo / Modelo y años / Pieza). No se borra nada. ¿Seguir?')) return;
+  const m = $('#drvMsg'), b = $('#drvOrden'); b.disabled = true; let primera = true, movidas = 0, err = 0;
+  try {
+    for (let i = 0; i < 200; i++) {
+      m.textContent = 'Ordenando… ' + movidas + ' fotos movidas';
+      const j = await apiPost('organizar_fotos', primera ? { reiniciar: true } : {}); primera = false;
+      if (!j.ok) throw new Error(j.error || 'Error');
+      movidas += j.hechas || 0; err += j.errores || 0;
+      if (!j.restantes) break;
+    }
+    m.textContent = `Listo: ${movidas} fotos ordenadas en carpetas.` + (err ? ` ${err} no se pudieron mover (revisa que sean tuyas en Drive).` : '');
+  } catch (e) { m.textContent = 'Se detuvo: ' + e.message + ' (puedes volver a tocar el botón, sigue donde quedó).'; }
+  b.disabled = false;
+});
 $('#adminBtn').addEventListener('click', openAdmin);
 
 /* ---------- Arranque ---------- */
+/* ---------- Imprimir y PDF (listados y pedidos) ---------- */
+const PRT_SIZES = [8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32];
+const PRT = { size: 12 };
+try { const v = +localStorage.getItem('bodega_prt_sz'); if (PRT_SIZES.includes(v)) PRT.size = v; } catch (e) {}
+const fszHTML = () => `<span class="fsz" role="group" aria-label="Tamaño de letra al imprimir"><button class="mini" data-fs="-1" aria-label="Letra más pequeña">A−</button><b data-fsv>${PRT.size} pt</b><button class="mini" data-fs="1" aria-label="Letra más grande">A+</button></span>`;
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-fs]'); if (!b) return;
+  const i = Math.max(0, Math.min(PRT_SIZES.length - 1, PRT_SIZES.indexOf(PRT.size) + (+b.dataset.fs)));
+  PRT.size = PRT_SIZES[i]; try { localStorage.setItem('bodega_prt_sz', String(PRT.size)); } catch (_) {}
+  document.querySelectorAll('[data-fsv]').forEach(n => { n.textContent = PRT.size + ' pt'; });
+});
+const PCOL = { verde: 'Prioridad máxima', rojo: 'Rojo' };
+// doc = { title, sub, rows: [{ t, s, q, col: '' | 'verde' | 'rojo', h }] }
+function printDoc(doc) {
+  let a = document.getElementById('printArea'); if (a) a.remove();
+  a = document.createElement('div'); a.id = 'printArea'; a.style.fontSize = PRT.size + 'pt';
+  a.innerHTML = `<h1>${esc(doc.title)}</h1><p class="psub">${esc(doc.sub || '')}</p><table>` + doc.rows.map(r =>
+    `<tr class="${r.col ? 'c-' + r.col : ''}${r.h ? ' hecho' : ''}"><td class="pbx"><span></span></td><td><b>${esc(r.t)}</b><small>${r.col ? `<em>${esc(PCOL[r.col])}</em> · ` : ''}${esc(r.s || '')}${r.h ? ' · hecho' : ''}</small></td><td class="pq">${r.q != null ? esc(r.q) + ' PCS' : ''}</td></tr>`).join('') + '</table>';
+  document.body.appendChild(a); document.body.classList.add('printing');
+  const fin = () => { document.body.classList.remove('printing'); window.removeEventListener('afterprint', fin); };
+  window.addEventListener('afterprint', fin);
+  setTimeout(() => { try { window.print(); } catch (e) { fin(); toast('Este navegador no puede imprimir', 3500); } }, 80);
+}
+// PDF escrito a mano (letra Helvetica estándar, sin librerías)
+function pdfBlob(doc, fs) {
+  const W = 595.28, H = 841.89, M = 42, cw = W - 2 * M, cv = document.createElement('canvas').getContext('2d');
+  const meas = (t, sz, b) => { cv.font = (b ? 'bold ' : '') + sz + 'px Arial,Helvetica,sans-serif'; return cv.measureText(t).width; };
+  const san = t => String(t == null ? '' : t).replace(/[–—]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/…/g, '...').replace(/−/g, '-').replace(/[^\x20-\x7E\xA0-\xFF]/g, '?');
+  const pe = t => san(t).replace(/([\\()])/g, '\\$1');
+  const wrap = (t, sz, mw, b) => {
+    const out = []; let cur = '';
+    san(t).split(/\s+/).forEach(w => { const n = cur ? cur + ' ' + w : w; if (cur && meas(n, sz, b) > mw) { out.push(cur); cur = w; } else cur = n; });
+    if (cur) out.push(cur); return out.length ? out : [''];
+  };
+  const pages = []; let ops = [], y = H - M;
+  const newPage = () => { pages.push(ops.join('\n')); ops = []; y = H - M; };
+  const T = (x, yy, t, sz, f, c) => ops.push(`BT /${f} ${sz.toFixed(2)} Tf ${c[0]} ${c[1]} ${c[2]} rg ${x.toFixed(2)} ${yy.toFixed(2)} Td (${pe(t)}) Tj ET`);
+  const GRAY = [0.4, 0.4, 0.4], BLACK = [0, 0, 0], VERDE = [0.09, 0.64, 0.29], ROJO = [0.86, 0.15, 0.15];
+  wrap(doc.title, fs * 1.6, cw, true).forEach(l => { y -= fs * 1.6 * 1.25; T(M, y, l, fs * 1.6, 'F2', BLACK); });
+  if (doc.sub) { y -= fs * 0.85 * 1.5; T(M, y, doc.sub, fs * 0.85, 'F1', GRAY); }
+  y -= fs * 0.9;
+  const bx = fs * 0.8, tx = M + bx + fs * 0.7;
+  doc.rows.forEach(r => {
+    const q = r.q != null ? r.q + ' PCS' : '', qw = q ? meas(q, fs, true) + fs : 0;
+    const main = wrap(r.t, fs, cw - (tx - M) - qw, false);
+    const subTxt = (r.col ? PCOL[r.col].toUpperCase() + ' · ' : '') + (r.s || '') + (r.h ? ' · hecho' : '');
+    const sub = subTxt ? wrap(subTxt, fs * 0.8, cw - (tx - M), false) : [];
+    const rh = main.length * fs * 1.25 + sub.length * fs * 0.8 * 1.25 + fs * 0.7;
+    if (y - rh < M + 18) newPage();
+    const top = y - fs * 1.05;
+    const col = r.col === 'verde' ? VERDE : r.col === 'rojo' ? ROJO : null;
+    // casilla para tildar
+    ops.push(col ? `${col[0]} ${col[1]} ${col[2]} rg ${M} ${(top - 1).toFixed(2)} ${bx.toFixed(2)} ${bx.toFixed(2)} re f` : `0.5 w 0 0 0 RG ${M} ${(top - 1).toFixed(2)} ${bx.toFixed(2)} ${bx.toFixed(2)} re S`);
+    const tc = r.h ? GRAY : (r.col === 'verde' ? [0.05, 0.4, 0.18] : r.col === 'rojo' ? [0.7, 0.08, 0.08] : BLACK);
+    let yy = y;
+    main.forEach(l => { yy -= fs * 1.25; T(tx, yy, l, fs, 'F2', tc); });
+    if (q) T(W - M - meas(q, fs, true), y - fs * 1.25, q, fs, 'F2', tc);
+    sub.forEach(l => { yy -= fs * 0.8 * 1.25; T(tx, yy, l, fs * 0.8, 'F1', GRAY); });
+    y -= rh;
+    ops.push(`0.5 w 0.85 0.85 0.85 RG ${M} ${(y + fs * 0.25).toFixed(2)} m ${W - M} ${(y + fs * 0.25).toFixed(2)} l S`);
+  });
+  newPage();
+  pages.forEach((p, i) => { pages[i] = p + '\n' + `BT /F1 8 Tf 0.5 0.5 0.5 rg ${M} 22 Td (${pe('Bodega · Página ' + (i + 1) + ' de ' + pages.length)}) Tj ET`; });
+  const objs = [], add = s => objs.push(s);
+  const n = pages.length, kids = pages.map((_, i) => `${6 + 2 * i} 0 R`).join(' ');
+  add('<< /Type /Catalog /Pages 2 0 R >>');
+  add(`<< /Type /Pages /Kids [${kids}] /Count ${n} >>`);
+  add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  pages.forEach((p, i) => {
+    add(`<< /Length ${p.length} >>\nstream\n${p}\nendstream`);
+    add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${5 + 2 * i} 0 R >>`);
+  });
+  // los objetos de página van en orden: 5 = contenido, 6 = página, ...
+  let out = '%PDF-1.4\n'; const off = [];
+  objs.forEach((o, i) => { off.push(out.length); out += `${i + 1} 0 obj\n${o}\nendobj\n`; });
+  const xr = out.length;
+  out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + off.map(o => String(o).padStart(10, '0') + ' 00000 n \n').join('') + `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`;
+  const u8 = new Uint8Array(out.length); for (let i = 0; i < out.length; i++) u8[i] = out.charCodeAt(i) & 255;
+  return new Blob([u8], { type: 'application/pdf' });
+}
+function downloadPDF(doc, nombre) {
+  try {
+    const b = pdfBlob(doc, PRT.size), a = document.createElement('a');
+    a.href = URL.createObjectURL(b); a.download = nombre.replace(/[^\w.-]+/g, '_') + '.pdf'; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000); toast('PDF descargado', 2500);
+  } catch (e) { toast('No se pudo crear el PDF: ' + e.message, 4000); }
+}
+
+/* ---------- Catálogo: si buscas una ubicación (ej. 1A1) se listan sus productos ---------- */
+function locSearch(raw) {
+  const q = normLoc(raw); if (!q || /\s/.test(String(raw).trim())) return null;
+  for (const k of locIdx().keys()) if (normLoc(k) === q) {
+    const items = locIdx().get(k).slice().sort((a, b) => cmpNat(a.d, b.d));
+    return { loc: k, items };
+  }
+  return null;
+}
+const locQty = (it, loc) => { const x = (it.ubs || []).find(y => y.u === loc); return x && x.q != null ? x.q : null; };
+function locDoc() {
+  const L = LOCQ; if (!L) return null;
+  const f = new Date();
+  return { title: 'Ubicación ' + L.loc, sub: `${sucInfo(SES.suc).nombre} · ${L.items.length} ${L.items.length === 1 ? 'producto' : 'productos'} · ${fFecha(f)} ${fHora(f)}`,
+    rows: L.items.map(it => ({ t: it.d, s: it.c, q: locQty(it, L.loc) })) };
+}
+function locBarHTML() {
+  const L = LOCQ, pz = L.items.reduce((s, it) => s + (locQty(it, L.loc) || 0), 0);
+  return `<div class="locbar"><div><b class="bin">${esc(L.loc)}</b> <span>${L.items.length} ${L.items.length === 1 ? 'producto' : 'productos'}${pz ? ' · ' + pz + ' PCS' : ''}</span></div>
+    <div class="row" style="align-items:center;gap:10px">${fszHTML()}<button class="btn tape" data-lp="print" style="flex:none;height:42px">Imprimir</button><button class="btn" data-lp="pdf" style="flex:none;height:42px">Descargar PDF</button></div></div>`;
+}
+$('#did').addEventListener('click', e => {
+  const b = e.target.closest('[data-lp]'); if (!b || !LOCQ) return;
+  const d = locDoc(); if (b.dataset.lp === 'print') printDoc(d); else downloadPDF(d, 'ubicacion-' + LOCQ.loc);
+});
+
+/* ---------- Resumen por auxiliar (administrador) ---------- */
+const RES = { per: 'hoy' };
+function resDesde() { return RES.per === 'hoy' ? new Date().setHours(0, 0, 0, 0) : RES.per === '7' ? Date.now() - 7 * 864e5 : 0; }
+function drawResSeg() { $('#resSeg').innerHTML = [['hoy', 'Hoy'], ['7', 'Últimos 7 días'], ['todo', 'Todo']].map(([k, t]) => `<button class="seg-b" data-p="${k}" aria-pressed="${RES.per === k}">${t}</button>`).join(''); }
+async function loadRes() {
+  const box = $('#resList'); box.innerHTML = '<p class="soft">Cargando…</p>'; $('#resTotal').textContent = '';
+  try {
+    const j = await apiGet({ action: 'resumen', desde: resDesde() }); if (!j.ok) throw new Error(j.error || 'Error');
+    $('#resTotal').textContent = `${j.codigosTotal} ${j.codigosTotal === 1 ? 'código distinto' : 'códigos distintos'} procesados en total`;
+    box.innerHTML = j.items.length ? j.items.map(r => {
+      const d = r.ultimo ? new Date(r.ultimo) : null;
+      return `<div class="resrow"><div class="rbig"><b>${r.codigos}</b><small>códigos</small></div><div class="rinfo"><b>${esc(r.nombre || r.usuario)}</b> <small style="color:var(--mute)">${esc(r.usuario)}${r.activo ? '' : ' · desactivado'}</small>
+        <div class="rchips"><span>Ubicaciones ${r.ubicaciones}</span><span>Muestreo: ${r.revisados} revisados (${r.encontrados} encontrados · ${r.faltantes} faltantes)</span>${r.piezas ? `<span>${r.piezas} PCS contadas</span>` : ''}<span>${r.muestreos} ${r.muestreos === 1 ? 'muestreo' : 'muestreos'}</span>${r.pedidosHechos ? `<span>${r.pedidosHechos} pedidos hechos</span>` : ''}</div>
+        <small style="color:var(--mute)">${d && !isNaN(d) ? 'Última actividad: ' + fFecha(d) + ' · ' + fHora(d) : 'Sin actividad en este periodo'}</small>
+        <div><button class="mini" data-vm="${esc(r.usuario)}">Ver sus muestreos</button><button class="mini" data-vr="${esc(r.usuario)}">Ver su registro</button></div></div></div>`;
+    }).join('') : '<p class="soft">Todavía no hay auxiliares ni actividad.</p>';
+  } catch (e) { box.innerHTML = `<p class="soft">No se pudo cargar (necesita internet): ${esc(e.message)}</p>`; }
+}
+function openRes() { if (!isAdmin()) return; drawResSeg(); $('#resDlg').showModal(); loadRes(); }
+$('#resBtn').addEventListener('click', openRes);
+$('#resClose').addEventListener('click', () => $('#resDlg').close());
+$('#resSeg').addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (b) { RES.per = b.dataset.p; drawResSeg(); loadRes(); } });
+$('#resList').addEventListener('click', e => {
+  const m = e.target.closest('[data-vm]'), r = e.target.closest('[data-vr]');
+  if (m) { $('#resDlg').close(); MUE.user = m.dataset.vm; setView('mue'); }
+  if (r) { $('#resDlg').close(); REC.user = r.dataset.vr; RECENT = null; setView('rec'); }
+});
+
+/* ---------- Pedidos ---------- */
+const PED = { list: [], det: {}, cur: null, users: [] };
+const pedKey = () => 'bodega_ped_' + SES.suc + '_' + (SES.usuario || '');
+function pedLoadCache() { try { const c = JSON.parse(localStorage.getItem(pedKey()) || '{}'); PED.list = c.list || []; PED.det = c.det || {}; } catch (e) { PED.list = []; PED.det = {}; } PED.cur = null; PED.users = []; }
+function pedSaveCache() { try { localStorage.setItem(pedKey(), JSON.stringify({ list: PED.list, det: PED.det })); } catch (e) {} }
+const pedDestTxt = d => d === '*' ? 'Todos los auxiliares' : (d || []).join(', ');
+const PRIO = { verde: 0, rojo: 1, '': 2 };
+const pedSorted = items => items.map((x, i) => [x, i]).sort((a, b) => (PRIO[a[0].col || ''] - PRIO[b[0].col || '']) || (a[1] - b[1])).map(x => x[0]);
+function pedTab() { $('#pedNew').hidden = !isAdmin(); showPedList(); drawPedList(); pedLoadRemote(); }
+function showPedList() { PED.cur = null; $('#pedListBox').hidden = false; $('#pedDet').hidden = true; }
+async function pedLoadRemote() {
+  if (!API_URL || navigator.onLine === false || !SES) return;
+  try { const j = await apiGet({ action: 'pedidos' }); if (j.ok) { PED.list = j.items || []; pedSaveCache(); if (!PED.cur) drawPedList(); } } catch (e) {}
+}
+function drawPedList() {
+  $('#pedInfo').textContent = isAdmin() ? 'Crea un pedido y envíalo a todos los auxiliares o solo a algunos.' : 'Los pedidos que te manda el administrador. Marca cada producto cuando lo tengas.';
+  $('#pedList').innerHTML = PED.list.length ? PED.list.map(p => {
+    const pct = p.total ? Math.round(p.hechos * 100 / p.total) : 0, d = new Date(p.fecha);
+    return `<button class="pcard" data-pid="${esc(p.id)}"><div><b>${esc(p.titulo)}</b>${p.estado === 'cerrado' ? ' <span class="tag">Cerrado</span>' : ''}<small>${!isNaN(d) ? fFecha(d) + ' · ' + fHora(d) + ' · ' : ''}${esc(p.creador)}${isAdmin() ? ' · Para: ' + esc(pedDestTxt(p.dest)) : ''}</small></div><div class="pprog"><div class="pbar"><i style="width:${pct}%"></i></div><small>${p.hechos} de ${p.total} hechos</small></div></button>`;
+  }).join('') : `<div class="empty-state"><h2>Aún no hay pedidos</h2><p>${isAdmin() ? 'Toca «Nuevo pedido» para crear el primero.' : 'Cuando el administrador te mande uno, aparecerá aquí.'}</p></div>`;
+}
+$('#pedList').addEventListener('click', e => { const b = e.target.closest('[data-pid]'); if (b) openPed(b.dataset.pid); });
+async function openPed(id) {
+  let det = PED.det[id];
+  if (navigator.onLine !== false) {
+    try { const j = await apiGet({ action: 'pedido_get', id }); if (j.ok) { det = PED.det[id] = j; pedSaveCache(); } else if (!det) throw new Error(j.error || 'Error'); }
+    catch (e) { if (!det) { toast('No se pudo abrir: ' + e.message, 4000); return; } }
+  }
+  if (!det) { toast('Este pedido necesita internet la primera vez', 4000); return; }
+  PED.cur = { ...JSON.parse(JSON.stringify(det)), isNew: false, dirty: false }; PED.cur.items.forEach(x => { x.sel = false; });
+  if (isAdmin()) await pedLoadUsers();
+  $('#pedListBox').hidden = true; $('#pedDet').hidden = false; drawPedDet(); window.scrollTo(0, 0);
+}
+async function pedLoadUsers() {
+  if (PED.users.length || navigator.onLine === false) return;
+  try { const j = await apiGet({ action: 'usuarios_lista' }); if (j.ok) PED.users = (j.usuarios || []).filter(u => u.activo); } catch (e) {}
+}
+$('#pedNew').addEventListener('click', async () => {
+  if (navigator.onLine === false) { toast('Para crear un pedido necesitas internet', 3500); return; }
+  await pedLoadUsers();
+  PED.cur = { id: 'ped_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), titulo: '', nota: '', dest: '*', estado: 'abierto', items: [], isNew: true, dirty: true, creador: SES.usuario };
+  $('#pedListBox').hidden = true; $('#pedDet').hidden = false; drawPedDet(); window.scrollTo(0, 0);
+});
+$('#pedBack').addEventListener('click', () => {
+  if (PED.cur && PED.cur.dirty && isAdmin() && !confirm('Hay cambios sin enviar. ¿Salir sin guardarlos?')) return;
+  showPedList(); drawPedList();
+});
+function pedDoc() {
+  const p = PED.cur, f = new Date(), pz = p.items.length;
+  return { title: p.titulo || 'Pedido', sub: `${sucInfo(SES.suc).nombre} · ${pz} ${pz === 1 ? 'producto' : 'productos'} · ${fFecha(f)} ${fHora(f)}${p.nota ? ' · ' + p.nota : ''}`,
+    rows: pedSorted(p.items).map(x => { const it = CODEMAP_get(x.c); return { t: x.d || (it ? it.d : x.c), s: x.c + (it && it.u ? ' · ' + it.u : ''), q: x.q != null ? x.q : null, col: x.col || '', h: !!x.h }; }) };
+}
+function drawPedDet() {
+  const p = PED.cur; if (!p) return; const adm = isAdmin();
+  $('#pedHead').innerHTML = adm
+    ? `<input class="sm" id="pedTit" maxlength="100" placeholder="Título del pedido (ej: Faroles urgentes)" value="${esc(p.titulo)}" aria-label="Título"><textarea class="sm" id="pedNota" maxlength="500" rows="2" placeholder="Nota (opcional)" aria-label="Nota" style="height:auto;padding:10px 14px;font:500 15px var(--sans)">${esc(p.nota)}</textarea>`
+    : `<h2 class="rec-title">${esc(p.titulo)}</h2>${p.nota ? `<p>${esc(p.nota)}</p>` : ''}`;
+  $('#pedDest').innerHTML = adm
+    ? `<div class="soft" style="margin:10px 0 4px">Enviar a:</div><div class="dchips"><button class="seg-b" data-pd="*" aria-pressed="${p.dest === '*'}">Todos los auxiliares</button>` +
+      PED.users.map(u => `<button class="seg-b" data-pd="${esc(u.usuario)}" aria-pressed="${p.dest !== '*' && p.dest.includes(u.usuario)}">${esc(u.nombre || u.usuario)}</button>`).join('') + '</div>'
+    : `<p class="soft">Para: ${esc(pedDestTxt(p.dest))}</p>`;
+  $('#pedAddBox').hidden = !adm; $('#pedTools').hidden = !adm;
+  const s = p.items, hechos = s.filter(x => x.h).length, pct = s.length ? Math.round(hechos * 100 / s.length) : 0;
+  $('#pedProg').innerHTML = `<div class="pbar big"><i style="width:${pct}%"></i></div><small class="soft">${hechos} de ${s.length} hechos${p.estado === 'cerrado' ? ' · Pedido cerrado' : ''}</small>`;
+  $('#pedItems').innerHTML = s.length ? '<div class="mbox">' + pedSorted(s).map(x => {
+    const it = CODEMAP_get(x.c), bins = it && it.ubs && it.ubs.length ? it.ubs.slice().reverse().slice(0, 2).map((b, k) => `<span class="bin${k ? ' old' : ''}">${esc(b.u)}${qTag(b)}</span>`).join('') : '<span class="bin none">Sin ubicación</span>';
+    const chk = adm ? `<input type="checkbox" data-sel="${esc(x.c)}" ${x.sel ? 'checked' : ''} aria-label="Marcar ${esc(x.d)}">` : `<input type="checkbox" data-hecho="${esc(x.c)}" ${x.h ? 'checked' : ''} aria-label="Hecho: ${esc(x.d)}">`;
+    const qty = adm ? `<input class="qin" type="number" inputmode="numeric" min="0" max="999999" data-pq="${esc(x.c)}" value="${x.q != null ? x.q : ''}" placeholder="Cant." aria-label="Cantidad pedida">` : (x.q != null ? `<span class="pqty">${x.q} PCS</span>` : '');
+    return `<div class="pit${x.col ? ' c-' + x.col : ''}${x.h ? ' hecho' : ''}"><label class="pchk">${chk}</label><div class="pmain"><b>${esc(x.d || (it ? it.d : x.c))}</b><small>${esc(x.c)}${x.col ? ` · <em>${esc(PCOL[x.col])}</em>` : ''}${x.h ? ` · hecho${x.hp ? ' por ' + esc(x.hp) : ''}` : ''}</small><div class="bins">${bins}${it && it.u ? `${cpBtn(it.u, 'pd|' + p.id + '|' + x.c)}` : ''}</div></div>${qty}</div>`;
+  }).join('') + '</div>' : '<div class="empty-state"><h2>Pedido vacío</h2><p>Busca productos arriba para agregarlos.</p></div>';
+  $('#pedSave').hidden = !adm; $('#pedSave').textContent = p.isNew ? 'Enviar pedido' : 'Guardar cambios';
+  $('#pedClose').hidden = !adm || p.isNew; $('#pedClose').textContent = p.estado === 'cerrado' ? 'Reabrir pedido' : 'Cerrar pedido';
+  $('#pedDel').hidden = !adm || p.isNew;
+  $('#pedFsz').innerHTML = fszHTML();
+  const all = $('#pedAll'); if (all) all.checked = s.length > 0 && s.every(x => x.sel);
+}
+$('#pedHead').addEventListener('input', e => { const p = PED.cur; if (!p) return; if (e.target.id === 'pedTit') p.titulo = e.target.value; if (e.target.id === 'pedNota') p.nota = e.target.value; p.dirty = true; });
+$('#pedDest').addEventListener('click', e => {
+  const b = e.target.closest('[data-pd]'), p = PED.cur; if (!b || !p) return;
+  const u = b.dataset.pd;
+  if (u === '*') p.dest = '*';
+  else { let a = p.dest === '*' ? [] : p.dest.slice(); a = a.includes(u) ? a.filter(x => x !== u) : a.concat(u); p.dest = a.length ? a : '*'; }
+  p.dirty = true; drawPedDet();
+});
+let pedSugT;
+$('#pedFind').addEventListener('input', () => { clearTimeout(pedSugT); pedSugT = setTimeout(drawPedSug, 120); });
+function drawPedSug() {
+  const q = $('#pedFind').value.trim(), box = $('#pedSug'); if (!q) { box.innerHTML = ''; return; }
+  const ps = buscarProductos(q, 8);
+  box.innerHTML = ps.length ? ps.map(it => `<button class="sg-row" data-padd="${it.i}"><span class="sg-main"><b>${esc(it.d)}</b><small>${esc(it.c)}${it.u ? ' · ' + esc(it.u) : ''}</small></span></button>`).join('') : '<p class="soft">No se encontró ese producto</p>';
+}
+$('#pedSug').addEventListener('click', e => {
+  const b = e.target.closest('[data-padd]'), p = PED.cur; if (!b || !p) return;
+  const it = IDX[+b.dataset.padd]; if (!it) return;
+  if (p.items.some(x => x.c === it.c)) { toast('Ya está en el pedido', 2500); return; }
+  p.items.push({ c: it.c, d: it.d, q: null, col: '', h: false, sel: false }); p.dirty = true;
+  $('#pedFind').value = ''; $('#pedSug').innerHTML = ''; drawPedDet(); $('#pedFind').focus();
+});
+$('#pedItems').addEventListener('input', e => {
+  const i = e.target.closest('[data-pq]'), p = PED.cur; if (!i || !p) return;
+  const x = p.items.find(y => y.c === i.dataset.pq); if (!x) return;
+  const t = i.value.trim(), n = Math.round(+t); x.q = (t === '' || isNaN(n) || n < 0) ? null : n; p.dirty = true;
+});
+$('#pedItems').addEventListener('change', async e => {
+  const p = PED.cur; if (!p) return;
+  const s = e.target.closest('[data-sel]');
+  if (s) { const x = p.items.find(y => y.c === s.dataset.sel); if (x) x.sel = s.checked; const all = $('#pedAll'); if (all) all.checked = p.items.every(y => y.sel); return; }
+  const h = e.target.closest('[data-hecho]');
+  if (h) {
+    const x = p.items.find(y => y.c === h.dataset.hecho); if (!x) return;
+    x.h = h.checked; x.hp = x.h ? (SES.usuario || '') : '';
+    PED.det[p.id] = JSON.parse(JSON.stringify({ ...p, items: p.items.map(({ sel, ...r }) => r) })); pedSaveCache();
+    const li = PED.list.find(y => y.id === p.id); if (li) { li.hechos = p.items.filter(y => y.h).length; pedSaveCache(); }
+    drawPedDet();
+    try { const r = await apiQ('pedido_hecho', { id: p.id, codigo: x.c, hecho: x.h }); if (!r.ok) throw new Error(r.error || 'Error'); if (r.queued) toast(QMSG, 3000); }
+    catch (err) { toast('No se pudo guardar: ' + err.message, 4000); }
+  }
+});
+$('#pedAll').addEventListener('change', e => { const p = PED.cur; if (!p) return; p.items.forEach(x => { x.sel = e.target.checked; }); drawPedDet(); });
+$('#pedTools').addEventListener('click', e => {
+  const b = e.target.closest('[data-pc]'), p = PED.cur; if (!b || !p) return;
+  const sel = p.items.filter(x => x.sel);
+  if (!sel.length) { toast('Primero marca con el check los productos que quieres cambiar', 3500); return; }
+  const a = b.dataset.pc;
+  if (a === 'del') { if (!confirm(`¿Quitar ${sel.length} ${sel.length === 1 ? 'producto' : 'productos'} del pedido?`)) return; p.items = p.items.filter(x => !x.sel); }
+  else sel.forEach(x => { x.col = a === 'verde' ? 'verde' : a === 'rojo' ? 'rojo' : ''; x.sel = false; });
+  p.dirty = true; drawPedDet();
+});
+async function pedSend(estadoNuevo) {
+  const p = PED.cur; if (!p) return;
+  if (navigator.onLine === false) { toast('Para enviar el pedido necesitas internet', 3500); return; }
+  p.titulo = $('#pedTit') ? $('#pedTit').value.trim() : p.titulo; p.nota = $('#pedNota') ? $('#pedNota').value.trim() : p.nota;
+  if (!p.titulo) { toast('Ponle un título al pedido', 3000); return; }
+  if (!p.items.length) { toast('Agrega al menos un producto', 3000); return; }
+  const est = estadoNuevo || p.estado;
+  const b = $('#pedSave'); b.disabled = true;
+  try {
+    const j = await apiPost('pedido_guardar', { id: p.id, titulo: p.titulo, nota: p.nota, dest: p.dest, estado: est, items: p.items.map(x => ({ c: x.c, d: x.d, q: x.q, col: x.col || '' })) });
+    if (!j.ok) throw new Error(j.error || 'Error');
+    p.estado = est; p.isNew = false; p.dirty = false;
+    PED.det[p.id] = JSON.parse(JSON.stringify({ ...p, items: p.items.map(({ sel, ...r }) => r) })); pedSaveCache();
+    toast(estadoNuevo ? (est === 'cerrado' ? 'Pedido cerrado' : 'Pedido reabierto') : 'Pedido enviado'); await pedLoadRemote(); drawPedDet();
+  } catch (e) { toast('No se pudo enviar: ' + e.message, 4500); }
+  b.disabled = false;
+}
+$('#pedSave').addEventListener('click', () => pedSend());
+$('#pedClose').addEventListener('click', () => pedSend(PED.cur && PED.cur.estado === 'cerrado' ? 'abierto' : 'cerrado'));
+$('#pedDel').addEventListener('click', async () => {
+  const p = PED.cur; if (!p || !confirm('¿Borrar este pedido para todos? No se puede deshacer.')) return;
+  try { const j = await apiPost('pedido_borrar', { id: p.id }); if (!j.ok) throw new Error(j.error || 'Error'); delete PED.det[p.id]; PED.list = PED.list.filter(x => x.id !== p.id); pedSaveCache(); toast('Pedido borrado'); showPedList(); drawPedList(); }
+  catch (e) { toast('No se pudo borrar: ' + e.message, 4000); }
+});
+$('#pedPrint').addEventListener('click', () => { if (!PED.cur) return; if (!PED.cur.items.length) { toast('El pedido está vacío', 2500); return; } printDoc(pedDoc()); });
+$('#pedPdf').addEventListener('click', () => { if (!PED.cur) return; if (!PED.cur.items.length) { toast('El pedido está vacío', 2500); return; } downloadPDF(pedDoc(), 'pedido-' + (PED.cur.titulo || 'sin-titulo')); });
+
+
 try { if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {}); } catch (e) {}
 DATA = PRODUCTOS.map(([c, d, u]) => ({ c, d, u: u || '' }));
 buildIndex(); buildFilters();
