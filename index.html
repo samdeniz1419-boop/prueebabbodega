@@ -90,6 +90,10 @@ button{cursor:pointer}
 .idline{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;flex-wrap:wrap}
 .code{font:500 11px/1.2 var(--mono);color:var(--mute);overflow-wrap:anywhere}
 .locwrap{display:inline-flex;align-items:center;gap:6px}
+.qn{display:inline-block;margin-left:6px;color:var(--text);font:700 12px var(--mono)}
+.qin{width:84px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg2,#120e24);color:var(--text);padding:0 10px;font:600 15px var(--sans);text-align:center}
+.qrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.qrow small{color:var(--mute)}
 .bin{display:inline-block;background:var(--soft);color:var(--violet-hi);font:500 12px/1 var(--mono);letter-spacing:.03em;padding:6px 10px;border-radius:999px}
 .bin.none{background:transparent;color:var(--mute);border:1px dashed #4a4178;padding:5px 9px}
 .more-loc{font:600 11px var(--sans);color:var(--mute);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:3px 7px}
@@ -631,12 +635,24 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
   </div>
 </dialog>
 
+<dialog id="qtyDlg" aria-label="Cantidad">
+  <div class="pin-box">
+    <h2 id="qtyTitle">Cantidad</h2>
+    <p id="qtySub" style="color:var(--mute);font-size:15px"></p>
+    <div class="qrow"><button class="btn" id="qtyMinus" style="flex:none;width:52px" aria-label="Menos">−</button><input id="qtyIn" type="number" inputmode="numeric" min="0" max="999999" placeholder="Cuántas hay" aria-label="Cantidad" style="flex:1;text-align:center;font-size:22px"><button class="btn" id="qtyPlus" style="flex:none;width:52px" aria-label="Más">+</button></div>
+    <div class="pin-err" id="qtyErr" aria-live="polite"></div>
+    <div class="row"><button class="btn tape" id="qtyOk">Guardar cantidad</button></div>
+    <div class="row"><button class="btn" id="qtySkip">Sin cantidad</button><button class="btn" id="qtyNo">Cancelar</button></div>
+  </div>
+</dialog>
+
 <dialog id="locDlg" aria-label="Ubicaciones del producto">
   <div class="pin-box">
     <h2>Ubicaciones</h2>
     <p id="locFor" style="color:var(--mute);font-size:15px"></p>
     <ul class="loclist" id="locList"></ul>
     <input id="locIn" maxlength="40" autocomplete="off" placeholder="Nueva ubicación, ej: 12A1" style="letter-spacing:.05em;text-transform:uppercase" aria-label="Nueva ubicación">
+    <div class="qrow"><input id="locQ" class="qin" type="number" inputmode="numeric" min="0" max="999999" placeholder="Cant." aria-label="Cantidad (opcional)"><small>¿Cuántas hay aquí? (opcional)</small></div>
     <div class="pin-err" id="locErr" aria-live="polite"></div>
     <div class="row">
       <button class="btn tape" id="locOk">Agregar ubicación</button>
@@ -731,8 +747,8 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
 /* =====================================================================
    CONFIGURACIÓN: pega aquí la URL de tu Apps Script (termina en /exec)
    ===================================================================== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbzF6aeF1Ehvri5QNzvjbu8bMake4JRdMbIoSh7KnuTL9zCQrnNv99fIgn2bKtNy65bH/exec';
-const SERVER_MIN = 10;   // versión mínima de Code.gs que necesita esta web
+const API_URL = 'https://script.google.com/macros/s/AKfycbwYIir8k2UKLFBL9hfcrhoPd1Adjlx7Sv5_ork5oQRHrpwNFPMXj14wDVdlKvcBfLFb/exec';
+const SERVER_MIN = 11;   // versión mínima de Code.gs que necesita esta web
 // Sucursales: el "id" debe ser igual al de Code.gs. Cada una tiene SU PROPIA hoja de Google (su catálogo, fotos y ubicaciones).
 // embebido: true = usa el catálogo incluido abajo mientras descarga el de su hoja (solo sirve para una sucursal).
 const SUCURSALES = [
@@ -1128,7 +1144,7 @@ function hl(it) {
 }
 
 const locHTML = it => (it.u || EDIT)
-  ? `<span class="locwrap"><span class="bin${it.u ? '' : ' none'}">${it.u ? esc(it.u) : 'Sin ubicación'}</span>${(it.ubs || []).length > 1 ? `<span class="more-loc" title="${it.ubs.length} ubicaciones">+${it.ubs.length - 1}</span>` : ''}${EDIT ? '<button class="loc-edit" data-act="loc" aria-label="Editar ubicaciones">Ubicaciones</button>' : ''}</span>` : '';
+  ? `<span class="locwrap"><span class="bin${it.u ? '' : ' none'}">${it.u ? esc(it.u) + qTag((it.ubs || [])[(it.ubs || []).length - 1]) : 'Sin ubicación'}</span>${(it.ubs || []).length > 1 ? `<span class="more-loc" title="${it.ubs.length} ubicaciones">+${it.ubs.length - 1}</span>` : ''}${EDIT ? '<button class="loc-edit" data-act="loc" aria-label="Editar ubicaciones">Ubicaciones</button>' : ''}</span>` : '';
 function card(it) {
   const f = fotosDe(it), ok = f.length > 0;
   const ph = ok
@@ -1300,7 +1316,7 @@ function drawViewer() {
   $('#vCamBtn').hidden = f.length >= MAX_FOTOS;
   $('#vCrop').hidden = !f.length;
   $('#vImp').hidden = !(isMaster() && f.length < MAX_FOTOS && SUCURSALES.length > 1);
-  $('#vLoc').innerHTML = (cur.ubs || []).length ? cur.ubs.slice().reverse().map((x, k) => `<span class="bin${k ? ' old' : ''}" title="${k ? 'Ubicación anterior' : 'Última ubicación'}">${esc(x.u)}</span>`).join(' ') : (EDIT ? '<span class="bin none">Sin ubicación</span>' : '');
+  $('#vLoc').innerHTML = (cur.ubs || []).length ? cur.ubs.slice().reverse().map((x, k) => `<span class="bin${k ? ' old' : ''}" title="${k ? 'Ubicación anterior' : 'Última ubicación'}">${esc(x.u)}${qTag(x)}</span>`).join(' ') : (EDIT ? '<span class="bin none">Sin ubicación</span>' : '');
   $('#vLocEdit').hidden = !EDIT;
   if (cur.u) $('#vLoc').insertAdjacentHTML('beforeend', ' <button class="mini" data-cp="' + esc(cur.u) + '">Copiar</button>');
 }
@@ -1455,7 +1471,7 @@ const fmtWhen = x => { if (!x.t) return 'Ubicación original'; const d = new Dat
 function drawLocList() {
   const L = (locItem.ubs || []).slice().reverse();
   $('#locList').innerHTML = L.length
-    ? L.map((x, k) => `<li><span class="bin">${esc(x.u)}</span><span class="when">${k === 0 ? 'Última · ' : ''}${esc(fmtWhen(x))}</span><button class="mini" data-cp="${esc(x.u)}">Copiar</button><button class="mini del" data-del="${esc(x.u)}" aria-label="Quitar la ubicación ${esc(x.u)}">Quitar</button></li>`).join('')
+    ? L.map((x, k) => `<li><span class="bin">${esc(x.u)}</span>${qTag(x)}<span class="when">${k === 0 ? 'Última · ' : ''}${esc(fmtWhen(x))}</span><button class="mini" data-cp="${esc(x.u)}">Copiar</button><button class="mini" data-qty="${esc(x.u)}">${qOf(x) === null ? 'Poner cantidad' : 'Cambiar cantidad'}</button><button class="mini del" data-del="${esc(x.u)}" aria-label="Quitar la ubicación ${esc(x.u)}">Quitar</button></li>`).join('')
     : '<li class="none">Este producto no tiene ubicaciones</li>';
 }
 function openLoc(it) {
@@ -1463,26 +1479,50 @@ function openLoc(it) {
   drawLocList(); $('#locDlg').showModal(); $('#locIn').focus();
 }
 function setLocs(it, arr) {
-  LOCS[it.c] = arr.map(x => ({ u: x[0], t: x[1] })); saveLocs(); applyLocs(it); updateCard(it);
+  LOCS[it.c] = arr.map(x => ({ u: x[0], t: x[1], q: x[2] == null ? null : x[2] })); saveLocs(); applyLocs(it); updateCard(it);
   if (vw.open && cur && cur.c === it.c) drawViewer();
   if ($('#locDlg').open && locItem && locItem.c === it.c) drawLocList();
   if (state.q) refresh();
 }
 function logLocal(it, u, a) { if (RECENT) RECENT.unshift({ t: new Date().toISOString(), u: SES.usuario || 'maestra', tipo: 'ubicacion', a, c: it.c, d: it.d, det: u }); }
 const QMSG = 'Sin internet: se guardó en el teléfono y se envía solo cuando vuelva la red';
-function localAdd(it, u, ts) {
-  const L = (it.ubs || []).filter(x => x.u !== u).map(x => [x.u, x.t || '']); L.push([u, new Date(ts || Date.now()).toISOString()]); setLocs(it, L);
+const qOf = x => (x && x.q != null) ? x.q : null;
+const qTag = x => qOf(x) !== null ? `<span class="qn" title="Cantidad">×${qOf(x)}</span>` : '';
+function localAdd(it, u, ts, q) {
+  const prev = (it.ubs || []).find(x => x.u === u);
+  const L = (it.ubs || []).filter(x => x.u !== u).map(x => [x.u, x.t || '', qOf(x)]);
+  L.push([u, new Date(ts || Date.now()).toISOString(), q === undefined ? qOf(prev) : q]); setLocs(it, L);
 }
-function localDel(it, u) { setLocs(it, (it.ubs || []).filter(x => x.u !== u).map(x => [x.u, x.t || ''])); }
+function localDel(it, u) { setLocs(it, (it.ubs || []).filter(x => x.u !== u).map(x => [x.u, x.t || '', qOf(x)])); }
+function localQty(it, u, q) { setLocs(it, (it.ubs || []).map(x => [x.u, x.t || '', x.u === u ? q : qOf(x)])); }
+// Pregunta cuántas piezas hay. Devuelve {q:número}, {q:null} (sin cantidad) o null (cancelar)
+function askQty(titulo, sub, valor) {
+  return new Promise(res => {
+    const d = $('#qtyDlg'); $('#qtyTitle').textContent = titulo; $('#qtySub').textContent = sub || '';
+    const inp = $('#qtyIn'); inp.value = valor != null ? valor : ''; let fin = false;
+    const done = v => { if (fin) return; fin = true; d.close(); res(v); };
+    const rd = () => { const t = inp.value.trim(); if (t === '') return { q: null }; const n = Math.round(+t); return (isNaN(n) || n < 0 || n > 999999) ? undefined : { q: n }; };
+    $('#qtyOk').onclick = () => { const v = rd(); if (v === undefined) { $('#qtyErr').textContent = 'Escribe un número, ej: 4'; return; } done(v); };
+    $('#qtySkip').onclick = () => done({ q: null });
+    $('#qtyNo').onclick = () => done(null);
+    $('#qtyMinus').onclick = () => { inp.value = Math.max(0, (+inp.value || 0) - 1); };
+    $('#qtyPlus').onclick = () => { inp.value = (+inp.value || 0) + 1; };
+    inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('#qtyOk').click(); } };
+    d.onclose = () => done(null);
+    $('#qtyErr').textContent = ''; d.showModal(); inp.focus(); inp.select();
+  });
+}
 async function addLoc() {
   const v = $('#locIn').value.replace(/\s+/g, ' ').trim().toUpperCase();
   if (!v) { $('#locErr').textContent = 'Escribe la ubicación'; return; }
   $('#locErr').textContent = 'Guardando…';
   try {
-    const r = await apiQ('ubicacion_add', { codigo: locItem.c, ubicacion: v });
+    const qt = $('#locQ').value.trim(), qn = qt === '' ? null : Math.round(+qt);
+    if (qt !== '' && (isNaN(qn) || qn < 0)) { $('#locErr').textContent = 'La cantidad debe ser un número'; return; }
+    const r = await apiQ('ubicacion_add', qn === null ? { codigo: locItem.c, ubicacion: v } : { codigo: locItem.c, ubicacion: v, cantidad: qn });
     if (!r.ok) throw new Error(r.error || 'Error');
-    if (r.queued) { localAdd(locItem, v); toast(QMSG, 3800); } else { setLocs(locItem, r.ubs); logLocal(locItem, v, 'agregada'); toast('Ubicación agregada'); }
-    $('#locIn').value = ''; $('#locErr').textContent = '';
+    if (r.queued) { localAdd(locItem, v, undefined, qn === null ? undefined : qn); toast(QMSG, 3800); } else { setLocs(locItem, r.ubs); logLocal(locItem, v, 'agregada'); toast('Ubicación agregada'); }
+    $('#locIn').value = ''; $('#locQ').value = ''; $('#locErr').textContent = '';
   } catch (e) { $('#locErr').textContent = 'No se pudo guardar: ' + e.message; }
 }
 async function delLoc(u) {
@@ -1498,7 +1538,18 @@ async function delLoc(u) {
 $('#locOk').addEventListener('click', addLoc);
 $('#locIn').addEventListener('keydown', e => { if (e.key === 'Enter') addLoc(); });
 $('#locNo').addEventListener('click', () => $('#locDlg').close());
-$('#locList').addEventListener('click', e => { const b = e.target.closest('[data-del]'); if (b) delLoc(b.dataset.del); });
+async function qtyLoc(u) {
+  const x = (locItem.ubs || []).find(y => y.u === u); if (!x) return;
+  const a = await askQty('¿Cuántas hay en ' + u + '?', locItem.d, qOf(x)); if (!a) return;
+  $('#locErr').textContent = 'Guardando…';
+  try {
+    const r = await apiQ('ubicacion_cantidad', { codigo: locItem.c, ubicacion: u, cantidad: a.q });
+    if (!r.ok) throw new Error(r.error || 'Error');
+    if (r.queued) { localQty(locItem, u, a.q); toast(QMSG, 3800); } else { setLocs(locItem, r.ubs); toast('Cantidad guardada'); }
+    $('#locErr').textContent = '';
+  } catch (e) { $('#locErr').textContent = 'No se pudo guardar: ' + e.message; }
+}
+$('#locList').addEventListener('click', e => { const b = e.target.closest('[data-del]'); if (b) { delLoc(b.dataset.del); return; } const q = e.target.closest('[data-qty]'); if (q) qtyLoc(q.dataset.qty); });
 $('#vLocEdit').addEventListener('click', () => openLoc(cur));
 
 /* ---------- Pestañas ---------- */
@@ -1586,15 +1637,16 @@ function renderRecent(failed) {
   RECROWS.forEach((r, k) => {
     const d = new Date(r.t); if (isNaN(d)) return;
     const esUb = r.tipo === 'ubicacion';
+    const dp = esUb ? String(r.det || '').split(' · ') : [], dloc = dp[0] || '', dqty = dp[1] ? `<span class="qn">${esc(dp[1].replace(/ pzas$/, ' pzas'))}</span>` : '';
     const chg = esUb
-      ? (r.a === 'quitada' ? `<span class="tag bad">Quitada</span><span class="bin gone">${esc(r.det)}</span>` : `<span class="tag good">Agregada</span><span class="bin">${esc(r.det)}</span>`)
+      ? (r.a === 'quitada' ? `<span class="tag bad">Quitada</span><span class="bin gone">${esc(dloc)}</span>` : r.a === 'cantidad' ? `<span class="tag">Cantidad</span><span class="bin">${esc(dloc)}${dqty}</span>` : `<span class="tag good">Agregada</span><span class="bin">${esc(dloc)}${dqty}</span>`)
       : `<span class="tag">${esc(r.tipo)} · ${esc(r.a)}</span>${r.det ? `<small style="color:var(--mute)">${esc(r.det)}</small>` : ''}`;
     html += `<div class="rrow">
       <span class="l-when"><span class="l-date">${fFecha(d)}</span></span><span class="l-time">${esc(fHora(d))}</span>
       <button class="l-prod" data-k="${k}"><b>${esc(r.d || r.c || '')}</b><small>${esc(r.c || '')}</small></button>
       <span class="l-chg">${chg}${r.pend ? '<span class="tag warn">Sin enviar</span>' : ''}</span>
       <span class="uchip" title="Quién lo hizo">${esc(r.u)}</span>
-      ${esUb && r.det ? `<button class="copy" data-cp="${esc(r.det)}" aria-label="Copiar la ubicación ${esc(r.det)}">Copiar</button>` : '<span></span>'}
+      ${esUb && dloc ? `<button class="copy" data-cp="${esc(dloc)}" aria-label="Copiar la ubicación ${esc(dloc)}">Copiar</button>` : '<span></span>'}
     </div>`;
   });
   box.innerHTML = html + '</div>';
@@ -1804,7 +1856,7 @@ async function sync() {
     const u = await apiGet({ action: 'ubicaciones' });
     if (!live()) return;
     if (!u.ok) throw new Error(u.error);
-    LOCS = {}; Object.keys(u.ubs || {}).forEach(c => { LOCS[c] = u.ubs[c].map(x => ({ u: x[0], t: x[1] })); });
+    LOCS = {}; Object.keys(u.ubs || {}).forEach(c => { LOCS[c] = u.ubs[c].map(x => ({ u: x[0], t: x[1], q: x[2] == null ? null : x[2] })); });
     saveLocs(); applyLocsAll();
     if (state.q) refresh(); else repaintCards();
     paintCount();
@@ -2178,7 +2230,7 @@ function renderUbi() {
       h += `<div class="ubgroup"><div class="ubgh"><span class="bin">${esc(loc)}</span><button class="mini" data-cp="${esc(loc)}">Copiar</button>` +
         `<span class="cntbadge" title="Productos que ya están guardados en esta ubicación">${locCount(loc)} ya en ${esc(loc)}</span>` +
         `<span class="cntbadge new" title="Productos por guardar">+${rows.length}</span></div>` +
-        rows.map(r => `<div class="ubrow"><div><b>${esc(r.it.d)}</b><small>${esc(r.it.c)}</small></div><button class="mini" data-rm="${r.id}" aria-label="Quitar de la lista">Quitar</button></div>`).join('') + '</div>';
+        rows.map(r => `<div class="ubrow"><div><b>${esc(r.it.d)}</b><small>${esc(r.it.c)}</small></div><input class="qin" type="number" inputmode="numeric" min="0" max="999999" data-qr="${r.id}" value="${r.cant != null ? r.cant : ''}" placeholder="Cant." aria-label="Cantidad de ${esc(r.it.d)} (opcional)"><button class="mini" data-rm="${r.id}" aria-label="Quitar de la lista">Quitar</button></div>`).join('') + '</div>';
     });
     h += `<div class="row"><button class="btn tape" id="ubSave" style="flex:none">Guardar ${pend.length} ${pend.length === 1 ? 'producto' : 'productos'}</button><button class="btn" id="ubEmpty" style="flex:none">Vaciar lista</button></div><div class="progress" id="ubSaveMsg" aria-live="polite"></div>`;
   }
@@ -2188,7 +2240,7 @@ function renderUbi() {
     h += res.map(r => {
       const cls = r.st === 'dup' ? ' dup' : (r.st === 'nf' || r.st === 'err') ? ' bad' : '';
       let st = '';
-      if (r.st === 'ok') st = `<span class="tag good">Guardada</span>${r.q ? '<span class="tag warn">Sin enviar</span>' : ''}<span class="bin">${esc(r.loc)}</span><button class="mini" data-cp="${esc(r.loc)}">Copiar</button><button class="mini" data-undo="${r.id}">Deshacer</button>`;
+      if (r.st === 'ok') st = `<span class="tag good">Guardada</span>${r.q ? '<span class="tag warn">Sin enviar</span>' : ''}<span class="bin">${esc(r.loc)}${r.cant != null ? `<span class="qn">×${r.cant}</span>` : ''}</span><button class="mini" data-cp="${esc(r.loc)}">Copiar</button><button class="mini" data-undo="${r.id}">Deshacer</button>`;
       else if (r.st === 'dup') st = `<span class="tag warn">Ya estaba aquí</span><span class="bin">${esc(r.loc)}</span>${r.principal ? '<small style="margin:0">es la principal</small>' : `<button class="mini" data-main="${r.id}">Hacer principal</button>`}<button class="mini" data-rm="${r.id}">Quitar aviso</button>`;
       else if (r.st === 'undone') st = `<span class="tag">Deshecha</span><span class="bin gone">${esc(r.loc)}</span>`;
       else if (r.st === 'nf') st = `<span class="tag bad">No está en el catálogo</span><button class="mini" data-rm="${r.id}">Quitar aviso</button>`;
@@ -2210,11 +2262,12 @@ async function guardarLista() {
       const rows = byLoc[loc];
       for (let i = 0; i < rows.length; i += 100) {
         const chunk = rows.slice(i, i + 100);
-        const j = await apiQ('ubicacion_lote', { ubicacion: loc, codigos: chunk.map(r => r.it.c) });
+        const cantidades = {}; chunk.forEach(r => { if (r.cant != null) cantidades[r.it.c] = r.cant; });
+        const j = await apiQ('ubicacion_lote', { ubicacion: loc, codigos: chunk.map(r => r.it.c), cantidades });
         if (!j.ok) throw new Error(j.error || 'Error');
         if (j.queued) {
           const ts = Date.now();
-          chunk.forEach(r => { localAdd(r.it, loc, ts); r.st = 'ok'; r.q = true; ok++; q++; });
+          chunk.forEach(r => { localAdd(r.it, loc, ts, r.cant != null ? r.cant : undefined); r.st = 'ok'; r.q = true; ok++; q++; });
           continue;
         }
         chunk.forEach((r, k) => {
@@ -2230,6 +2283,11 @@ async function guardarLista() {
   UBI.locIdx = null; renderUbi(); if ($('#ubDet').open) renderLocPanel();
 }
 
+$('#ubList').addEventListener('input', e => {
+  const i = e.target.closest('[data-qr]'); if (!i) return;
+  const r = UBI.rows.find(x => x.id === +i.dataset.qr); if (!r) return;
+  const t = i.value.trim(), n = Math.round(+t); r.cant = (t === '' || isNaN(n) || n < 0) ? null : n;
+});
 $('#ubList').addEventListener('click', async e => {
   const g = a => { const el = e.target.closest('[' + a + ']'); return el ? +el.getAttribute(a) : 0; };
   if (e.target.closest('#ubSave')) { guardarLista(); return; }
@@ -2441,7 +2499,7 @@ function mueSaveLocal() {
   ids.slice(25).forEach(id => { if (!LMUE[id].dirty) delete LMUE[id]; });
   try { localStorage.setItem(mueKey(), JSON.stringify(LMUE)); } catch (e) { toast('El teléfono no tiene espacio para guardar más muestreos', 4000); }
 }
-const mueStats = m => { let ok = 0, fa = 0, pe = 0; m.items.forEach(x => { if (x.e === 'ok') ok++; else if (x.e === 'falta') fa++; else pe++; }); return { ok, fa, pe, total: m.items.length, rev: ok + fa }; };
+const mueStats = m => { let ok = 0, fa = 0, pe = 0, pz = 0; m.items.forEach(x => { if (x.e === 'ok') { ok++; if (x.q != null) pz += x.q; } else if (x.e === 'falta') fa++; else pe++; }); return { ok, fa, pe, pz, total: m.items.length, rev: ok + fa }; };
 const mueFecha = ms => { const d = new Date(ms); return isNaN(d) || !ms ? '' : `${fFecha(d)} · ${fHora(d)}`; };
 
 let mueT = {};
@@ -2452,7 +2510,7 @@ function mueTouch(m) {
 async function mueSend(m) {
   if (!LMUE[m.id]) return;
   const mod = m.mod;
-  const payload = { id: m.id, nombre: m.nombre, estado: m.estado, items: m.items.map(x => ({ c: x.c, e: x.e, u: x.u || '', t: x.t || 0 })), _mod: mod };
+  const payload = { id: m.id, nombre: m.nombre, estado: m.estado, items: m.items.map(x => ({ c: x.c, e: x.e, u: x.u || '', t: x.t || 0, q: x.e === 'ok' && x.q != null ? x.q : null })), _mod: mod };
   try {
     const r = await apiQ('muestreo_guardar', payload);
     if (!r.ok) throw new Error(r.error || 'Error');
@@ -2523,7 +2581,7 @@ async function mueOpen(id) {
       const j = await apiGet({ action: 'muestreo_get', id });
       if (!j.ok) throw new Error(j.error || 'Error');
       m = LMUE[id] = { id, nombre: j.nombre, usuario: h ? h.usuario : (SES.usuario || 'maestra'), inicio: Date.parse(h && h.inicio) || Date.now(), estado: j.estado,
-        items: j.items.map(x => ({ c: x.c, e: x.e, u: x.u || '', t: x.t ? Date.parse(x.t) : 0 })), mod: Date.parse(h && h.mod) || Date.now(), dirty: false };
+        items: j.items.map(x => ({ c: x.c, e: x.e, u: x.u || '', t: x.t ? Date.parse(x.t) : 0, q: x.q == null ? null : x.q })), mod: Date.parse(h && h.mod) || Date.now(), dirty: false };
       mueSaveLocal();
     } catch (e) { toast('No se pudo abrir (necesita internet): ' + e.message, 4000); return; }
   }
@@ -2541,7 +2599,7 @@ function drawMueDet() {
   const s = mueStats(m), pct = s.total ? Math.round(s.rev * 100 / s.total) : 0;
   $('#mueTitle').textContent = m.nombre; drawMueSub();
   $('#muePbar').style.width = pct + '%';
-  $('#mueStats').innerHTML = `<span class="tag good">${s.ok} encontrados</span><span class="tag bad">${s.fa} faltantes</span><span class="tag">${s.pe} pendientes</span><b>${pct}%</b>`;
+  $('#mueStats').innerHTML = `<span class="tag good">${s.ok} encontrados</span><span class="tag bad">${s.fa} faltantes</span><span class="tag">${s.pe} pendientes</span>${s.pz ? `<span class="tag good">${s.pz} piezas contadas</span>` : ''}<b>${pct}%</b>`;
   $('#mueClose').textContent = m.estado === 'cerrado' ? 'Reabrir muestreo' : 'Cerrar muestreo';
   $('#mueSeg').innerHTML = [['pend', 'Pendientes', s.pe], ['ok', 'Encontrados', s.ok], ['falta', 'Faltantes', s.fa], ['todos', 'Todos', s.total]]
     .map(([k, t, n]) => `<button class="seg-b" data-f="${k}" aria-pressed="${MUE.filt === k}">${t} ${n}</button>`).join('');
@@ -2553,21 +2611,35 @@ function drawMueDet() {
     const bins = it && it.ubs && it.ubs.length ? it.ubs.slice().reverse().slice(0, 3).map((b, k) => `<span class="bin${k ? ' old' : ''}">${esc(b.u)}</span>`).join('') : '<span class="bin none">Sin ubicación</span>';
     const acts = x.e === 'pend'
       ? `<button class="mb ok" data-me="ok" data-c="${esc(x.c)}">Está</button><button class="mb bad" data-me="falta" data-c="${esc(x.c)}">Falta</button>`
-      : `<span class="tag ${x.e === 'ok' ? 'good' : 'bad'}">${x.e === 'ok' ? 'Encontrado' : 'Faltante'}</span><button class="mini" data-me="pend" data-c="${esc(x.c)}">Deshacer</button>`;
+      : `<span class="tag ${x.e === 'ok' ? 'good' : 'bad'}">${x.e === 'ok' ? 'Encontrado' + (x.q != null ? ' · ' + x.q + ' pzas' : '') : 'Faltante'}</span>${x.e === 'ok' ? `<button class="mini" data-mq="${esc(x.c)}">${x.q != null ? 'Cambiar cantidad' : 'Poner cantidad'}</button>` : ''}<button class="mini" data-me="pend" data-c="${esc(x.c)}">Deshacer</button>`;
     return `<div class="mit"><div><b>${esc(it ? it.d : x.c)}</b><small>${esc(x.c)}</small><div class="bins">${bins}${ub ? `<button class="mini" data-cp="${esc(ub)}">Copiar</button>` : ''}</div></div><div class="acts">${acts}</div></div>`;
   }).join('') + '</div>' : `<div class="empty-state"><h2>${MUE.filt === 'pend' ? (s.total ? '¡No quedan pendientes!' : 'Muestreo vacío') : 'Nada por aquí'}</h2></div>`;
   $('#mueMore').hidden = list.length <= MUE.show;
 }
 $('#mueSeg').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { MUE.filt = b.dataset.f; MUE.show = 60; drawMueDet(); } });
 $('#mueMore').addEventListener('click', () => { MUE.show += 60; drawMueDet(); });
-function mueMark(c, e) {
+function mueMark(c, e, q) {
   const m = MUE.cur; if (!m) return false;
   const x = m.items.find(y => y.c === c); if (!x) return false;
   const it = CODEMAP_get(c);
   x.e = e; x.t = e === 'pend' ? 0 : Date.now(); x.u = it && it.u ? it.u : '';
+  x.q = e === 'ok' ? (q === undefined ? (x.q == null ? null : x.q) : q) : null;
   mueTouch(m); drawMueDet(); return true;
 }
-$('#mueItems').addEventListener('click', e => { const b = e.target.closest('[data-me]'); if (b) mueMark(b.dataset.c, b.dataset.me); });
+// Al marcar «Está» se pregunta cuántas piezas hay (se puede dejar sin cantidad)
+async function mueEsta(c, editar) {
+  const m = MUE.cur; if (!m) return;
+  const x = m.items.find(y => y.c === c); if (!x) return;
+  const it = CODEMAP_get(c);
+  const a = await askQty('¿Cuántas encontraste?', (it ? it.d : c) + (it && it.u ? ' · ' + it.u : ''), x.q);
+  if (!a) return;                       // cancelar: no cambia nada
+  mueMark(c, 'ok', a.q);
+}
+$('#mueItems').addEventListener('click', e => {
+  const b = e.target.closest('[data-me]');
+  if (b) { if (b.dataset.me === 'ok') mueEsta(b.dataset.c); else mueMark(b.dataset.c, b.dataset.me); return; }
+  const q = e.target.closest('[data-mq]'); if (q) mueEsta(q.dataset.mq, true);
+});
 $('#mueClose').addEventListener('click', () => {
   const m = MUE.cur; if (!m) return;
   const s = mueStats(m);
@@ -2585,7 +2657,7 @@ function muesRead(text) {
     const x = m.items.find(y => y.c === it.c);
     if (!x) { msg = `⚠ No es de este muestreo: ${it.d}`; cls = 'warn'; beep(520, 2); vib([90, 70, 90]); }
     else if (x.e === 'ok') { msg = `ℹ Ya estaba marcado: ${it.d}`; cls = 'warn'; beep(700, 1); vib(60); }
-    else { mueMark(it.c, 'ok'); const s = mueStats(m); msg = `✓ ${s.ok} de ${s.total}: ${it.d}`; cls = 'ok'; beep(1100, 1); vib(70); }
+    else { mueMark(it.c, 'ok'); const s = mueStats(m); msg = `✓ ${s.ok} de ${s.total}: ${it.d}`; cls = 'ok'; beep(1100, 1); vib(70); setTimeout(() => mueEsta(it.c), 150); }
   }
   $('#scMsg').textContent = msg; $('#scMsg').className = 'scan-msg ' + cls;
   const s = mueStats(m); $('#scCtx').textContent = `Muestreo: ${m.nombre} · Encontrados ${s.ok} de ${s.total}`;
@@ -2635,7 +2707,7 @@ $('#mnOk').addEventListener('click', () => {
   if (its.length > 2000) { mnInfo(); return; }
   const id = 'M' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const m = LMUE[id] = { id, nombre: ($('#mnName').value.trim() || 'Muestreo').slice(0, 80), usuario: SES.usuario || 'maestra', inicio: Date.now(), estado: 'abierto',
-    items: its.map(it => ({ c: it.c, e: 'pend', u: '', t: 0 })), mod: Date.now(), dirty: true };
+    items: its.map(it => ({ c: it.c, e: 'pend', u: '', t: 0, q: null })), mod: Date.now(), dirty: true };
   mueSaveLocal(); mueTouch(m); $('#mueNewDlg').close();
   MUE.cur = m; MUE.filt = 'pend'; MUE.show = 60; $('#mueListBox').hidden = true; $('#mueDet').hidden = false; drawMueDet(); window.scrollTo(0, 0);
   toast(`Muestreo iniciado: ${its.length} productos`);
