@@ -107,6 +107,10 @@ button{cursor:pointer}
 .tag{font:700 11px var(--sans);padding:4px 9px;border-radius:999px;letter-spacing:.02em}
 .tag.good{background:rgba(34,197,94,.14);color:#4ade80}
 .tag.bad{background:rgba(255,107,138,.14);color:var(--bad)}
+#qtyIn{text-align:center;font:700 26px var(--sans);letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+#qtyIn::-webkit-outer-spin-button,#qtyIn::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+#qtyIn::placeholder{font:500 16px var(--sans);letter-spacing:0;color:var(--mute)}
+#locQ::placeholder{letter-spacing:0;font-size:13px}
 #locIn::placeholder{text-transform:none;letter-spacing:0;font-size:15px}
 .loclist{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;max-height:min(40dvh,320px);overflow:auto}
 .loclist li{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
@@ -208,6 +212,9 @@ dialog#lbDlg{width:100vw;height:100dvh;max-width:none;max-height:none;margin:0}
 .copy:hover{background:var(--violet);color:#fff}
 .cpi{width:36px;height:36px;flex:none;border:0;border-radius:10px;background:var(--soft);color:var(--violet-hi);display:inline-flex;align-items:center;justify-content:center;padding:0;vertical-align:middle;margin-left:4px}
 .cpi svg{width:18px;height:18px}
+.lc{display:inline-flex;align-items:center;gap:2px}
+.cpi.sm{width:28px;height:28px;border-radius:8px;margin-left:0}
+.cpi.sm svg{width:15px;height:15px}
 .cpi.done{background:var(--good);color:#04210f}
 .cpi.pulse{animation:cpp .5s ease}
 @keyframes cpp{40%{transform:scale(1.18)}}
@@ -370,7 +377,7 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
 .mbox{margin:14px 0 40px;background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
 .mstats{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .mb{height:38px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);font:700 13.5px var(--sans)}
-.mb.ok{background:rgba(34,197,94,.16);color:#4ade80;border-color:rgba(34,197,94,.4)}
+.mb.ok{background:var(--soft);color:var(--violet-hi);border-color:rgba(139,92,246,.45)}
 .mb.bad{background:rgba(255,107,138,.14);color:var(--bad);border-color:rgba(255,107,138,.4)}
 .catpick{max-height:210px;overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:6px;display:flex;flex-direction:column;gap:4px}
 .cat-b{display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:left;padding:10px 12px;border:0;border-radius:10px;background:transparent;font:600 14px var(--sans)}
@@ -672,6 +679,14 @@ body.ventas #locShare { display: none !important; }
       <div class="row"><button class="btn" id="drvOrden">Ordenar en carpetas las fotos ya subidas</button></div>
       <div class="soft" id="drvMsg" aria-live="polite" style="min-height:22px;margin-top:10px"></div>
     </div>
+    <div id="admImp" hidden>
+      <p class="soft">Sube un Excel con productos nuevos (código, descripción, unidad de medida y, si la tienes, ubicación). Solo se agregan los que <b>no existan</b> en la sucursal elegida; los demás se ignoran. El archivo se lee aquí en tu teléfono o computadora y <b>no se guarda</b>: solo se guardan los productos nuevos.</p>
+      <select class="sel" id="impSuc" aria-label="Sucursal a actualizar" style="width:100%"></select>
+      <label class="btn" for="impFile" style="display:flex;justify-content:center;margin-top:10px;cursor:pointer">Elegir archivo Excel (.xlsx) o CSV</label>
+      <input type="file" id="impFile" accept=".xlsx,.xls,.csv,text/csv" hidden>
+      <div class="soft" id="impMsg" aria-live="polite" style="min-height:22px;margin-top:10px;overflow-wrap:anywhere"></div>
+      <div class="row"><button class="btn tape" id="impGo" hidden>Agregar productos nuevos</button></div>
+    </div>
     <div id="admMov" hidden>
       <p class="soft">Copia las fotos (y, si quieres, los productos nuevos) de una sucursal a la otra. Puedes repetirlo cuando agregues productos: solo pasa lo que falta, nunca duplica.</p>
       <div class="row" style="align-items:center">
@@ -780,7 +795,7 @@ body.ventas #locShare { display: none !important; }
   <div class="pin-box">
     <h2 id="qtyTitle">Cantidad</h2>
     <p id="qtySub" style="color:var(--mute);font-size:15px"></p>
-    <div class="qrow"><button class="btn" id="qtyMinus" style="flex:none;width:52px" aria-label="Menos">−</button><input id="qtyIn" type="number" inputmode="numeric" min="0" max="999999" placeholder="Cuántas hay" aria-label="Cantidad" style="flex:1;text-align:center;font-size:22px"><button class="btn" id="qtyPlus" style="flex:none;width:52px" aria-label="Más">+</button></div>
+    <div class="qrow"><button class="btn" id="qtyMinus" style="flex:none;width:52px" aria-label="Menos">−</button><input id="qtyIn" type="number" inputmode="numeric" min="0" max="999999" placeholder="Cantidad" aria-label="Cantidad" style="flex:1;min-width:0"><button class="btn" id="qtyPlus" style="flex:none;width:52px" aria-label="Más">+</button></div>
     <div class="pin-err" id="qtyErr" aria-live="polite"></div>
     <div class="row"><button class="btn tape" id="qtyOk">Guardar cantidad</button></div>
     <div class="row"><button class="btn" id="qtySkip">Sin cantidad</button><button class="btn" id="qtyNo">Cancelar</button></div>
@@ -889,8 +904,8 @@ body.ventas #locShare { display: none !important; }
 /* =====================================================================
    CONFIGURACIÓN: pega aquí la URL de tu Apps Script (termina en /exec)
    ===================================================================== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbx7gYe2GLwYnS83JXUcrsLvJRLc1I7roY9A4m0_7-zq-VNKdbvFx0l2G_XPrQPoD429/exec';
-const SERVER_MIN = 17;   // versión mínima de Code.gs que necesita esta web
+const API_URL = 'https://script.google.com/macros/s/AKfycbwqnnaGF2tWe_I1KJDmfFSgK79HUey9yUyCW5rlT-f3z8xH8lJsqNkywjCaY2hKi3yj/exec';
+const SERVER_MIN = 18;   // versión mínima de Code.gs que necesita esta web
 // Sucursales: el "id" debe ser igual al de Code.gs. Cada una tiene SU PROPIA hoja de Google (su catálogo, fotos y ubicaciones).
 // embebido: true = usa el catálogo incluido abajo mientras descarga el de su hoja (solo sirve para una sucursal).
 const SUCURSALES = [
@@ -1481,9 +1496,8 @@ function drawViewer() {
   $('#vCamBtn').hidden = f.length >= MAX_FOTOS;
   $('#vCrop').hidden = !f.length;
   $('#vImp').hidden = !(isMaster() && f.length < MAX_FOTOS && SUCURSALES.length > 1);
-  $('#vLoc').innerHTML = (cur.ubs || []).length ? cur.ubs.slice().reverse().map((x, k) => `<span class="bin${k ? ' old' : ''}" title="${k ? 'Ubicación anterior' : 'Última ubicación'}">${esc(x.u)}${qTag(x)}</span>`).join(' ') : (EDIT ? '<span class="bin none">Sin ubicación</span>' : '');
+  $('#vLoc').innerHTML = (cur.ubs || []).length ? cur.ubs.slice().reverse().map((x, k) => `<span class="lc"><span class="bin${k ? ' old' : ''}" title="${k ? 'Ubicación anterior' : 'Última ubicación'}">${esc(x.u)}${qTag(x)}</span>${cpBtn(x.u, 'u|' + cur.c + '|' + x.u, 'sm')}</span>`).join(' ') : (EDIT ? '<span class="bin none">Sin ubicación</span>' : '');
   $('#vLocEdit').hidden = !EDIT;
-  if (cur.u) $('#vLoc').insertAdjacentHTML('beforeend', ' ' + cpBtn(cur.u, 'u|' + cur.c + '|' + cur.u));
 }
 $('#vBig').addEventListener('click', e => {
   const f = fotosDe(cur); if (f.length < 2) return;
@@ -1661,13 +1675,14 @@ function localAdd(it, u, ts, q) {
 function localDel(it, u) { setLocs(it, (it.ubs || []).filter(x => x.u !== u).map(x => [x.u, x.t || '', qOf(x)])); }
 function localQty(it, u, q) { setLocs(it, (it.ubs || []).map(x => [x.u, x.t || '', x.u === u ? q : qOf(x)])); }
 // Pregunta cuántas piezas hay. Devuelve {q:número}, {q:null} (sin cantidad) o null (cancelar)
-function askQty(titulo, sub, valor) {
+function askQty(titulo, sub, valor, obligatoria) {
   return new Promise(res => {
     const d = $('#qtyDlg'); $('#qtyTitle').textContent = titulo; $('#qtySub').textContent = sub || '';
     const inp = $('#qtyIn'); inp.value = valor != null ? valor : ''; let fin = false;
     const done = v => { if (fin) return; fin = true; d.close(); res(v); };
-    const rd = () => { const t = inp.value.trim(); if (t === '') return { q: null }; const n = Math.round(+t); return (isNaN(n) || n < 0 || n > 999999) ? undefined : { q: n }; };
-    $('#qtyOk').onclick = () => { const v = rd(); if (v === undefined) { $('#qtyErr').textContent = 'Escribe un número, ej: 4'; return; } done(v); };
+    $('#qtySkip').hidden = !!obligatoria;
+    const rd = () => { const t = inp.value.trim(); if (t === '') return obligatoria ? undefined : { q: null }; const n = Math.round(+t); return (isNaN(n) || n < 0 || n > 999999) ? undefined : { q: n }; };
+    $('#qtyOk').onclick = () => { const v = rd(); if (v === undefined) { $('#qtyErr').textContent = obligatoria ? 'Escribe la cantidad (si no hay ninguna, pon 0)' : 'Escribe un número, ej: 4'; return; } done(v); };
     $('#qtySkip').onclick = () => done({ q: null });
     $('#qtyNo').onclick = () => done(null);
     $('#qtyMinus').onclick = () => { inp.value = Math.max(0, (+inp.value || 0) - 1); };
@@ -1705,6 +1720,7 @@ async function delLoc(u) {
 $('#locOk').addEventListener('click', addLoc);
 $('#locIn').addEventListener('keydown', e => { if (e.key === 'Enter') addLoc(); });
 $('#locNo').addEventListener('click', () => $('#locDlg').close());
+$('#locDlg').addEventListener('close', () => { if (MUE.cur && !$('#mueDet').hidden) drawMueDet(); });
 async function qtyLoc(u) {
   const x = (locItem.ubs || []).find(y => y.u === u); if (!x) return;
   const a = await askQty('¿Cuántas hay en ' + u + '?', locItem.d, qOf(x)); if (!a) return;
@@ -2237,7 +2253,7 @@ async function openScanner(mode, loc) {
   sc.mode = (mode === 'batch' || mode === 'mues') ? mode : 'search'; sc.cool = {}; sc.loc = loc || '';
   $('#scCtx').hidden = sc.mode === 'search';
   if (sc.mode === 'batch') $('#scCtx').textContent = `Ubicación: ${sc.loc} · En la lista: ${pendCount(sc.loc)}`;
-  if (sc.mode === 'mues') { const s = mueStats(MUE.cur); $('#scCtx').textContent = `Muestreo: ${MUE.cur.nombre} · Encontrados ${s.ok} de ${s.total}`; }
+  if (sc.mode === 'mues') { const s = mueStats(MUE.cur); $('#scCtx').textContent = `Muestreo: ${MUE.cur.nombre} · Contados ${s.ok} de ${s.total}`; }
   $('#scMsg').className = 'scan-msg';
   $('#scView').classList.remove('off'); $('#scMsg').textContent = sc.mode === 'batch' ? 'Apunta al código de cada producto: se agregará a la lista.' : sc.mode === 'mues' ? 'Apunta al código de cada producto: se marca como encontrado.' : 'Apunta al código QR o de barras';
   $('#scTorch').hidden = true; $('#scFlip').hidden = true; $('#scZoomBox').hidden = true;
@@ -2709,7 +2725,7 @@ function mueSaveLocal() {
   ids.slice(25).forEach(id => { if (!LMUE[id].dirty) delete LMUE[id]; });
   try { localStorage.setItem(mueKey(), JSON.stringify(LMUE)); } catch (e) { toast('El teléfono no tiene espacio para guardar más muestreos', 4000); }
 }
-const mueStats = m => { let ok = 0, fa = 0, pe = 0, pz = 0; m.items.forEach(x => { if (x.e === 'ok') { ok++; if (x.q != null) pz += x.q; } else if (x.e === 'falta') fa++; else pe++; }); return { ok, fa, pe, pz, total: m.items.length, rev: ok + fa }; };
+const mueStats = m => { let ok = 0, fa = 0, pe = 0, pz = 0; m.items.forEach(x => { if (x.e === 'ok') { ok++; if (x.q != null) pz += x.q; } else pe++; }); return { ok, fa: 0, pe, pz, total: m.items.length, rev: ok }; };
 const mueFecha = ms => { const d = new Date(ms); return isNaN(d) || !ms ? '' : `${fFecha(d)} · ${fHora(d)}`; };
 
 let mueT = {};
@@ -2765,7 +2781,7 @@ function drawMueList() {
       <div class="mmain"><b>${esc(r.nombre)}</b>
         <small>${esc(mueFecha(r.mod))} · ${esc(r.usuario)}${r.dirty ? ' · sin enviar' : ''}</small>
         <div class="pbar"><i style="width:${pct}%"></i></div>
-        <small>${r.rev} de ${r.total} revisados (${pct}%) · ${r.fa} faltantes · ${r.pe} pendientes</small></div>
+        <small>${r.rev} de ${r.total} contados (${pct}%) · ${r.pe} pendientes</small></div>
       <span class="tag ${r.estado === 'cerrado' ? 'good' : 'warn'}">${r.estado === 'cerrado' ? 'Cerrado' : 'Abierto'}</span>
       <button class="mini del" data-mdel="${esc(r.id)}" aria-label="Borrar este muestreo">Borrar</button></div>`;
   }).join('') : '<div class="empty-state"><h2>Aún no hay muestreos</h2><p>Toca «Iniciar muestreo», elige una categoría (faroles, brackets…) y empieza a contar.</p></div>';
@@ -2809,20 +2825,21 @@ function drawMueDet() {
   const s = mueStats(m), pct = s.total ? Math.round(s.rev * 100 / s.total) : 0;
   $('#mueTitle').textContent = m.nombre; drawMueSub();
   $('#muePbar').style.width = pct + '%';
-  $('#mueStats').innerHTML = `<span class="tag good">${s.ok} encontrados</span><span class="tag bad">${s.fa} faltantes</span><span class="tag">${s.pe} pendientes</span>${s.pz ? `<span class="tag good">${s.pz} PCS contadas</span>` : ''}<b>${pct}%</b>`;
+  $('#mueStats').innerHTML = `<span class="tag good">${s.ok} contados</span><span class="tag">${s.pe} pendientes</span>${s.pz ? `<span class="tag good">${s.pz} PCS contadas</span>` : ''}<b>${pct}%</b>`;
   $('#mueClose').textContent = m.estado === 'cerrado' ? 'Reabrir muestreo' : 'Cerrar muestreo';
-  $('#mueSeg').innerHTML = [['pend', 'Pendientes', s.pe], ['ok', 'Encontrados', s.ok], ['falta', 'Faltantes', s.fa], ['todos', 'Todos', s.total]]
+  $('#mueSeg').innerHTML = [['pend', 'Pendientes', s.pe], ['ok', 'Contados', s.ok], ['todos', 'Todos', s.total]]
     .map(([k, t, n]) => `<button class="seg-b" data-f="${k}" aria-pressed="${MUE.filt === k}">${t} ${n}</button>`).join('');
-  let list = m.items.filter(x => MUE.filt === 'todos' || (MUE.filt === 'pend' ? x.e === 'pend' : x.e === MUE.filt));
-  if (MUE.filt === 'ok' || MUE.filt === 'falta') list = list.slice().sort((a, b) => (b.t || 0) - (a.t || 0));
+  if (MUE.filt === 'falta') MUE.filt = 'pend';
+  let list = m.items.filter(x => MUE.filt === 'todos' || (MUE.filt === 'pend' ? x.e !== 'ok' : x.e === 'ok'));
+  if (MUE.filt === 'ok') list = list.slice().sort((a, b) => (b.t || 0) - (a.t || 0));
   const part = list.slice(0, MUE.show);
   $('#mueItems').innerHTML = part.length ? '<div class="mbox">' + part.map(x => {
     const it = CODEMAP_get(x.c), ub = it && it.u ? it.u : x.u;
-    const bins = it && it.ubs && it.ubs.length ? it.ubs.slice().reverse().slice(0, 3).map((b, k) => `<span class="bin${k ? ' old' : ''}">${esc(b.u)}</span>`).join('') : '<span class="bin none">Sin ubicación</span>';
-    const acts = x.e === 'pend'
-      ? `<button class="mb ok" data-me="ok" data-c="${esc(x.c)}">Está</button><button class="mb bad" data-me="falta" data-c="${esc(x.c)}">Falta</button>`
-      : `<span class="tag ${x.e === 'ok' ? 'good' : 'bad'}">${x.e === 'ok' ? 'Encontrado' + (x.q != null ? ' · ' + x.q + ' PCS' : '') : 'Faltante'}</span>${x.e === 'ok' ? `<button class="mini" data-mq="${esc(x.c)}">${x.q != null ? 'Cambiar cantidad' : 'Poner cantidad'}</button>` : ''}<button class="mini" data-me="pend" data-c="${esc(x.c)}">Deshacer</button>`;
-    return `<div class="mit"><div><b>${esc(it ? it.d : x.c)}</b><small>${esc(x.c)}</small><div class="bins">${bins}${ub ? `${cpBtn(ub, 'm|' + m.id + '|' + x.c)}` : ''}</div></div><div class="acts">${acts}</div></div>`;
+    const bins = it && it.ubs && it.ubs.length ? it.ubs.slice().reverse().slice(0, 3).map((b, k) => `<span class="lc"><span class="bin${k ? ' old' : ''}">${esc(b.u)}</span>${cpBtn(b.u, 'u|' + x.c + '|' + b.u, 'sm')}</span>`).join('') : '<span class="bin none">Sin ubicación</span>';
+    const acts = x.e !== 'ok'
+      ? `<button class="mb ok" data-mq="${esc(x.c)}">Poner cantidad</button><button class="mini" data-ml="${esc(x.c)}">Cambiar ubicación</button>`
+      : `<span class="tag good">${x.q != null ? x.q + ' PCS' : 'Contado'}</span><button class="mini" data-mq="${esc(x.c)}">Cambiar</button><button class="mini" data-ml="${esc(x.c)}">Cambiar ubicación</button><button class="mini" data-me="pend" data-c="${esc(x.c)}">Deshacer</button>`;
+    return `<div class="mit"><div><b>${esc(it ? it.d : x.c)}</b><small>${esc(x.c)}</small><div class="bins">${bins}</div></div><div class="acts">${acts}</div></div>`;
   }).join('') + '</div>' : `<div class="empty-state"><h2>${MUE.filt === 'pend' ? (s.total ? '¡No quedan pendientes!' : 'Muestreo vacío') : 'Nada por aquí'}</h2></div>`;
   $('#mueMore').hidden = list.length <= MUE.show;
 }
@@ -2841,14 +2858,15 @@ async function mueEsta(c, editar) {
   const m = MUE.cur; if (!m) return;
   const x = m.items.find(y => y.c === c); if (!x) return;
   const it = CODEMAP_get(c);
-  const a = await askQty('¿Cuántas encontraste?', (it ? it.d : c) + (it && it.u ? ' · ' + it.u : ''), x.q);
+  const a = await askQty('¿Cuántas hay?', (it ? it.d : c) + (it && it.u ? ' · ' + it.u : ''), x.q, true);
   if (!a) return;                       // cancelar: no cambia nada
   mueMark(c, 'ok', a.q);
 }
 $('#mueItems').addEventListener('click', e => {
   const b = e.target.closest('[data-me]');
   if (b) { if (b.dataset.me === 'ok') mueEsta(b.dataset.c); else mueMark(b.dataset.c, b.dataset.me); return; }
-  const q = e.target.closest('[data-mq]'); if (q) mueEsta(q.dataset.mq, true);
+  const q = e.target.closest('[data-mq]'); if (q) { mueEsta(q.dataset.mq, true); return; }
+  const l = e.target.closest('[data-ml]'); if (l) { const it = CODEMAP_get(l.dataset.ml); if (it) openLoc(it); }
 });
 $('#mueClose').addEventListener('click', () => {
   const m = MUE.cur; if (!m) return;
@@ -2867,10 +2885,10 @@ function muesRead(text) {
     const x = m.items.find(y => y.c === it.c);
     if (!x) { msg = `⚠ No es de este muestreo: ${it.d}`; cls = 'warn'; beep(520, 2); vib([90, 70, 90]); }
     else if (x.e === 'ok') { msg = `ℹ Ya estaba marcado: ${it.d}`; cls = 'warn'; beep(700, 1); vib(60); }
-    else { mueMark(it.c, 'ok'); const s = mueStats(m); msg = `✓ ${s.ok} de ${s.total}: ${it.d}`; cls = 'ok'; beep(1100, 1); vib(70); setTimeout(() => mueEsta(it.c), 150); }
+    else { msg = `✓ Escribe la cantidad: ${it.d}`; cls = 'ok'; beep(1100, 1); vib(70); setTimeout(() => mueEsta(it.c), 150); }
   }
   $('#scMsg').textContent = msg; $('#scMsg').className = 'scan-msg ' + cls;
-  const s = mueStats(m); $('#scCtx').textContent = `Muestreo: ${m.nombre} · Encontrados ${s.ok} de ${s.total}`;
+  const s = mueStats(m); $('#scCtx').textContent = `Muestreo: ${m.nombre} · Contados ${s.ok} de ${s.total}`;
 }
 $('#scanDlg').addEventListener('close', () => { if (MUE.cur && !$('#mueDet').hidden) drawMueDet(); });
 
@@ -2933,12 +2951,13 @@ function openAdmin() {
   drawAdm(); $('#adminDlg').showModal(); admLoad(); admClear();
 }
 function drawAdm() {
-  $('#admTabs').innerHTML = (isMaster() ? [['usr', 'Auxiliares'], ['drv', 'Drive'], ['mov', 'Pasar fotos y productos']] : [['usr', 'Auxiliares'], ['drv', 'Drive']]).map(([k, t]) => `<button class="seg-b" data-t="${k}" aria-pressed="${ADM.tab === k}">${t}</button>`).join('');
-  $('#admUsr').hidden = ADM.tab !== 'usr'; $('#admMov').hidden = ADM.tab !== 'mov'; $('#admDrv').hidden = ADM.tab !== 'drv';
+  $('#admTabs').innerHTML = (isMaster() ? [['usr', 'Auxiliares'], ['drv', 'Drive'], ['imp', 'Subir productos'], ['mov', 'Pasar fotos y productos']] : [['usr', 'Auxiliares'], ['drv', 'Drive']]).map(([k, t]) => `<button class="seg-b" data-t="${k}" aria-pressed="${ADM.tab === k}">${t}</button>`).join('');
+  $('#admUsr').hidden = ADM.tab !== 'usr'; $('#admMov').hidden = ADM.tab !== 'mov'; $('#admImp').hidden = ADM.tab !== 'imp'; $('#admDrv').hidden = ADM.tab !== 'drv';
   $('#admSuc').hidden = !isMaster();
   $('#admSuc').innerHTML = SUCURSALES.map(s => `<button class="seg-b" data-s="${s.id}" aria-pressed="${s.id === ADM.suc}">${esc(s.nombre)}</button>`).join('');
   const opts = v => SUCURSALES.map(s => `<option value="${s.id}"${s.id === v ? ' selected' : ''}>${esc(s.nombre)}</option>`).join('');
   $('#admO').innerHTML = opts(ADM.o); $('#admD').innerHTML = opts(ADM.d);
+  const cur = $('#impSuc').value || ADM.suc; $('#impSuc').innerHTML = opts(cur) + (SUCURSALES.length > 1 ? `<option value="*"${cur === '*' ? ' selected' : ''}>Ambas sucursales (sin ubicaciones)</option>` : '');
 }
 $('#admTabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { ADM.tab = b.dataset.t; drawAdm(); } });
 $('#admSuc').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (b) { ADM.suc = b.dataset.s; drawAdm(); admLoad(); admClear(); } });
@@ -2973,6 +2992,103 @@ $('#admSave').addEventListener('click', async () => {
   } catch (e) { $('#admErr').textContent = e instanceof NetErr ? 'Sin internet' : e.message; }
 });
 $('#admNo').addEventListener('click', () => $('#adminDlg').close());
+/* ---- Subir productos nuevos desde Excel (solo administrador supremo) ---- */
+const IMP = { rows: [], suc: '' };
+const XLSX_URL = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.mini.min.js';
+function loadXlsx() {
+  return new Promise((res, rej) => {
+    if (window.XLSX) return res(window.XLSX);
+    const sc = document.createElement('script'); sc.src = XLSX_URL; sc.onload = () => res(window.XLSX); sc.onerror = () => rej(new Error('No se pudo cargar el lector de Excel. Revisa tu internet o guarda el archivo como CSV.'));
+    document.head.appendChild(sc);
+  });
+}
+function csvRows(txt) {
+  const sep = (txt.split('\n')[0].match(/;/g) || []).length > (txt.split('\n')[0].match(/,/g) || []).length ? ';' : ',';
+  const out = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < txt.length; i++) {
+    const ch = txt[i];
+    if (q) { if (ch === '"') { if (txt[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === sep) { row.push(cell); cell = ''; }
+    else if (ch === '\n') { row.push(cell); out.push(row); row = []; cell = ''; }
+    else if (ch !== '\r') cell += ch;
+  }
+  if (cell !== '' || row.length) { row.push(cell); out.push(row); }
+  return out;
+}
+const impTxt = v => v == null ? '' : (typeof v === 'number' ? (Number.isInteger(v) ? String(v) : String(v)) : String(v)).trim();
+function impMap(table) {
+  const H = { c: /^(codigo|cod|code|sku|clave|item|articulo)(_?producto)?$/, d: /^(descripcion|desc|nombre|producto|detalle|description)$/, u: /^(unidad|um|u m|unidad_?de_?medida|unidad_?medida|medida|und)$/, l: /^(ubicacion|ubic|posicion|localizacion|bin)$/ };
+  const nm = t => nk(String(t)).replace(/[^a-z0-9 _]/g, '').trim().replace(/ +/g, '_').replace(/^u_m$/, 'um');
+  let hi = -1, cols = {};
+  for (let i = 0; i < Math.min(table.length, 15) && hi < 0; i++) {
+    const c = {}; table[i].forEach((v, j) => { const t = nm(v); for (const k in H) if (!(k in c) && H[k].test(t)) c[k] = j; });
+    if ('c' in c && 'd' in c) { hi = i; cols = c; }
+  }
+  if (hi < 0) { hi = -1; cols = { c: 0, d: 1, u: 2, l: 3 }; }
+  const rows = [], seen = new Set();
+  table.slice(hi + 1).forEach(r => {
+    const c = impTxt(r[cols.c]), d = impTxt(r[cols.d]).replace(/\s+/g, ' ');
+    if (!c || !d) return; const k = c.toUpperCase(); if (seen.has(k)) return; seen.add(k);
+    rows.push({ c, d: d.toUpperCase(), u: 'u' in cols ? impTxt(r[cols.u]) : '', l: 'l' in cols ? impTxt(r[cols.l]) : '' });
+  });
+  return { rows, header: hi >= 0, tiene: Object.keys(cols) };
+}
+const impDest = () => $('#impSuc').value === '*' ? SUCURSALES.map(s => s.id) : [$('#impSuc').value];
+const impNombre = () => $('#impSuc').value === '*' ? 'ambas sucursales' : sucInfo($('#impSuc').value).nombre;
+// Devuelve el resumen de cada sucursal elegida. En «ambas» no se guardan ubicaciones (no son las mismas en cada una).
+async function impSend(soloVer, onProg) {
+  const out = [];
+  for (const suc of impDest()) {
+    const t = { suc, nuevos: 0, yaExisten: 0, invalidos: 0, ejemplos: [] };
+    const rows = $('#impSuc').value === '*' ? IMP.rows.map(r => ({ ...r, l: '' })) : IMP.rows;
+    for (let i = 0; i < rows.length; i += 400) {
+      const j = await apiAs(suc, 'productos_importar', { filas: rows.slice(i, i + 400), soloVer });
+      if (!j.ok) throw new Error((sucInfo(suc).nombre) + ': ' + (j.error || 'Error'));
+      t.nuevos += j.nuevos; t.yaExisten += j.yaExisten; t.invalidos += j.invalidos; if (t.ejemplos.length < 5) t.ejemplos.push(...j.ejemplos);
+      if (onProg) onProg(sucInfo(suc).nombre, Math.min(i + 400, rows.length));
+    }
+    out.push(t);
+  }
+  return out;
+}
+async function impReview() {
+  const m = $('#impMsg'), go = $('#impGo'); go.hidden = true;
+  if (!IMP.rows.length) { m.textContent = 'No encontré productos con código y descripción en el archivo.'; return; }
+  m.textContent = 'Revisando contra ' + impNombre() + '…';
+  try {
+    const ts = await impSend(true), total = ts.reduce((a, t) => a + t.nuevos, 0);
+    m.innerHTML = `Archivo: <b>${IMP.rows.length}</b> productos.` + ts.map(t => `<br>En <b>${esc(sucInfo(t.suc).nombre)}</b>: <b>${t.nuevos}</b> nuevos por agregar · ${t.yaExisten} ya existen (se ignoran).`).join('') +
+      (ts[0].ejemplos.length ? `<br><small style="color:var(--mute)">Ej.: ${ts[0].ejemplos.map(esc).join(' | ')}</small>` : '');
+    go.hidden = !total; go.textContent = `Agregar ${total} productos nuevos`; IMP.nuevos = total;
+  } catch (e) { m.textContent = e instanceof NetErr ? 'Sin internet' : e.message; }
+}
+$('#impFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; const m = $('#impMsg'); $('#impGo').hidden = true; IMP.rows = [];
+  if (!f) return; m.textContent = 'Leyendo archivo…';
+  try {
+    let table;
+    if (/\.csv$/i.test(f.name) || f.type === 'text/csv') table = csvRows(await f.text());
+    else { const X = await loadXlsx(); const wb = X.read(await f.arrayBuffer(), { type: 'array' }); table = X.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: '' }); }
+    const r = impMap(table); IMP.rows = r.rows;
+    if (!r.header) m.textContent = 'No encontré los títulos (código, descripción…); uso las columnas en ese orden: código, descripción, unidad, ubicación. ';
+    await impReview();
+  } catch (err) { m.textContent = err.message || 'No pude leer el archivo'; }
+  e.target.value = '';                       // el archivo no se queda guardado en ningún lado
+});
+$('#impSuc').addEventListener('change', () => { if (IMP.rows.length) impReview(); });
+$('#impGo').addEventListener('click', async () => {
+  const m = $('#impMsg'), go = $('#impGo'), suc = $('#impSuc').value;
+  if (!confirm(`¿Agregar ${IMP.nuevos} productos nuevos a ${impNombre()}? Los que ya existen no se tocan.`)) return;
+  go.disabled = true;
+  try {
+    const ts = await impSend(false, (nom, n) => { m.textContent = `Guardando en ${nom}… ${n} de ${IMP.rows.length}`; });
+    m.innerHTML = '✓ Listo.' + ts.map(t => `<br><b>${t.nuevos}</b> productos nuevos agregados a <b>${esc(sucInfo(t.suc).nombre)}</b> (${t.yaExisten} ya existían).`).join('');
+    IMP.rows = []; go.hidden = true;
+    if (suc === SES.suc || suc === '*') sync();
+  } catch (e) { m.textContent = (e instanceof NetErr ? 'Sin internet' : e.message) + ' · puedes volver a intentarlo: no se duplica nada.'; }
+  go.disabled = false;
+});
 function admParams() {
   const p = { origen: ADM.o, destino: ADM.d, modo: $('#admModo').value, agregarFaltantes: $('#admAgr').checked };
   if ($('#admSel').value === 'elegir') p.codigos = [...ADM.pick];
@@ -3189,7 +3305,7 @@ async function loadRes() {
     box.innerHTML = j.items.length ? j.items.map(r => {
       const d = r.ultimo ? new Date(r.ultimo) : null;
       return `<div class="resrow"><div class="rbig"><b>${r.codigos}</b><small>códigos</small></div><div class="rinfo"><b>${esc(r.nombre || r.usuario)}</b> <small style="color:var(--mute)">${esc(r.usuario)}${r.activo ? '' : ' · desactivado'}</small>
-        <div class="rchips"><span>Ubicaciones ${r.ubicaciones}</span><span>Muestreo: ${r.revisados} revisados (${r.encontrados} encontrados · ${r.faltantes} faltantes)</span>${r.piezas ? `<span>${r.piezas} PCS contadas</span>` : ''}<span>${r.muestreos} ${r.muestreos === 1 ? 'muestreo' : 'muestreos'}</span>${r.pedidosHechos ? `<span>${r.pedidosHechos} pedidos hechos</span>` : ''}</div>
+        <div class="rchips"><span>Ubicaciones ${r.ubicaciones}</span><span>Muestreo: ${r.encontrados} contados</span>${r.piezas ? `<span>${r.piezas} PCS contadas</span>` : ''}<span>${r.muestreos} ${r.muestreos === 1 ? 'muestreo' : 'muestreos'}</span>${r.pedidosHechos ? `<span>${r.pedidosHechos} pedidos hechos</span>` : ''}</div>
         <small style="color:var(--mute)">${d && !isNaN(d) ? 'Última actividad: ' + fFecha(d) + ' · ' + fHora(d) : 'Sin actividad en este periodo'}</small>
         <div><button class="mini" data-vm="${esc(r.usuario)}">Ver sus muestreos</button><button class="mini" data-vr="${esc(r.usuario)}">Ver su registro</button></div></div></div>`;
     }).join('') : '<p class="soft">Todavía no hay auxiliares ni actividad.</p>';
