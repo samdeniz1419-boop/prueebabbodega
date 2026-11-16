@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bodega · Catálogo de carrocería con fotos</title>
+<title>Multipart Bodega</title>
 <meta name="theme-color" content="#0d0a18">
 <link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Multipart Bodega">
+<meta name="application-name" content="Multipart Bodega">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -36,6 +38,7 @@ button{cursor:pointer}
 /* ---------- Encabezado ---------- */
 .mast{padding-top:env(safe-area-inset-top)}
 .mast-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:10px}
+.edit-btn.on{color:#4ade80;border-color:rgba(74,222,128,.45)}
 .wordmark{font:800 clamp(26px,4vw,34px)/1 var(--sans);letter-spacing:-.03em}
 .tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:999px}
 .tab{height:38px;padding:0 18px;border:0;border-radius:999px;background:transparent;color:var(--mute);font:600 14px var(--sans)}
@@ -347,6 +350,7 @@ body.locked header.mast,body.locked #catTools,body.locked main{display:none}
 .statusbar .mini{color:#fde68a}
 .pin-box.wide{width:min(560px,calc(100vw - 24px));max-height:92dvh;overflow:auto}
 .pin-box input.sm,.pin-box select.sm{height:46px;font-size:16px;letter-spacing:0;text-transform:none}
+#loginAux:not([hidden]){display:flex;flex-direction:column;gap:8px;max-height:38vh;overflow-y:auto}#loginKeyBox:not([hidden]){display:flex;flex-direction:column;gap:10px}
 .pin-box .soft{color:var(--mute);font-size:14px}
 .sel{height:42px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 12px;font:600 14px var(--sans);color:var(--ink);max-width:100%}
 .sel:focus,.fld.sm:focus{outline:none;border-color:var(--violet)}
@@ -401,7 +405,7 @@ body{overflow-x:hidden}
   .tabs{width:100%}
   .tab{flex:1 1 auto;min-width:0;padding:0 6px;font-size:12px;white-space:nowrap}
 }
-@media(max-width:360px){.tab{padding:0 3px;font-size:11px}.wordmark{font-size:24px}}
+@media(max-width:360px){.tab{padding:0 3px;font-size:11px}.wordmark{font-size:21px}}
 #pedView .sm{width:100%;max-width:100%;height:46px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);color:var(--ink);padding:0 14px;font:500 16px var(--sans)}
 #pedView textarea.sm{height:auto;min-height:64px;padding:10px 14px;resize:vertical;font-size:15px}
 #pedView .sm:focus{outline:none;border-color:var(--violet)}
@@ -452,7 +456,7 @@ body.ventas #locShare { display: none !important; }
 <body>
 <header class="mast">
   <div class="wrap mast-in">
-    <div class="brandline"><h1 class="wordmark">Bodega</h1><span class="suc-tag" id="sucName"></span><button class="edit-btn" id="adminBtn" hidden>Admin</button></div>
+    <div class="brandline"><h1 class="wordmark">Multipart Bodega</h1><span class="suc-tag" id="sucName"></span><button class="edit-btn" id="adminBtn" hidden>Admin</button></div>
     <nav class="tabs" role="tablist">
       <button class="tab" id="tabCat" role="tab" aria-selected="true">Catálogo</button>
       <button class="tab" id="tabUbi" role="tab" aria-selected="false">Ubicaciones</button>
@@ -487,6 +491,7 @@ body.ventas #locShare { display: none !important; }
         <span id="sync"></span>
         <button class="edit-btn" id="sessBtn">Salir</button>
         <button class="edit-btn" id="editBtn" aria-pressed="false">Modo editor</button>
+        <button class="edit-btn" id="pushBtn" hidden>Avisos</button>
       </span>
     </div>
     <div id="did"></div>
@@ -653,13 +658,12 @@ body.ventas #locShare { display: none !important; }
     <h2>Administración</h2>
     <div class="seg" id="admTabs" role="group" aria-label="Sección"></div>
     <div id="admUsr">
-      <p class="soft">Los auxiliares son distintos en cada sucursal. Elige la sucursal y crea o edita sus auxiliares.</p>
+      <p class="soft">Los auxiliares son distintos en cada sucursal y entran sin clave: eligen su nombre en la pantalla de entrada. Si desactivas a uno, ya no aparece en la lista.</p>
       <div class="seg" id="admSuc" role="group" aria-label="Sucursal"></div>
       <div id="admList"></div>
       <div class="admform">
         <input class="sm" id="admU" maxlength="30" autocomplete="off" autocapitalize="off" placeholder="Usuario (sin espacios, ej: juan)" aria-label="Usuario">
         <input class="sm" id="admN" maxlength="60" autocomplete="off" placeholder="Nombre (ej: Juan Pérez)" aria-label="Nombre">
-        <input class="sm" id="admC" type="text" autocomplete="off" placeholder="Clave (mínimo 4 caracteres)" aria-label="Clave">
         <select class="sel" id="admR" aria-label="Perfil" style="width:100%"><option value="auxiliar">Auxiliar de bodega (ubicaciones, muestreos, pedidos)</option><option value="ventas">Sala de ventas (solo catálogo y fotos)</option></select>
         <label class="chk"><input type="checkbox" id="admA" checked> Activo (puede entrar)</label>
         <div class="pin-err" id="admErr" aria-live="polite"></div>
@@ -678,6 +682,14 @@ body.ventas #locShare { display: none !important; }
       <div class="row" style="margin-top:10px"><button class="btn tape" id="drvSync">Buscar fotos nuevas en Drive</button></div>
       <div class="row"><button class="btn" id="drvOrden">Ordenar en carpetas las fotos ya subidas</button></div>
       <div class="soft" id="drvMsg" aria-live="polite" style="min-height:22px;margin-top:10px"></div>
+      <hr style="border:0;border-top:1px solid var(--line,#3a3355);margin:14px 0">
+      <p class="soft"><b>Subir fotos desde mi computadora o teléfono</b><br>Elige varias fotos a la vez. Cada foto se asocia al producto por el nombre del archivo: el <b>código</b> (ej: CAP-FDES08-002548N.jpg) o la <b>descripción</b> del producto. Las que no se reconozcan las asignas tú.</p>
+      <label class="btn" for="pcFiles" style="display:flex;justify-content:center;cursor:pointer">Elegir fotos…</label>
+      <input type="file" id="pcFiles" accept="image/*" multiple hidden>
+      <div id="pcList" style="margin-top:8px"></div>
+      <datalist id="pcDl"></datalist>
+      <div class="row"><button class="btn tape" id="pcGo" hidden>Subir fotos</button></div>
+      <div class="soft" id="pcMsg" aria-live="polite" style="min-height:22px;margin-top:8px;overflow-wrap:anywhere"></div>
     </div>
     <div id="admImp" hidden>
       <p class="soft">Sube un Excel con productos nuevos (código, descripción, unidad de medida y, si la tienes, ubicación). Solo se agregan los que <b>no existan</b> en la sucursal elegida; los demás se ignoran. El archivo se lee aquí en tu teléfono o computadora y <b>no se guarda</b>: solo se guardan los productos nuevos.</p>
@@ -747,14 +759,17 @@ body.ventas #locShare { display: none !important; }
 
 <dialog id="loginDlg" aria-label="Entrar">
   <div class="pin-box">
-    <h2>Bodega</h2>
-    <p style="color:var(--mute);font-size:15px">Elige la sucursal, escribe tu usuario y tu clave. El dueño deja el usuario vacío y usa la clave maestra.</p>
+    <h2>Multipart Bodega</h2>
+    <p style="color:var(--mute);font-size:15px" id="loginHelp">Elige la sucursal y toca tu nombre para entrar.</p>
     <div class="seg" id="loginSeg" role="group" aria-label="Sucursal"></div>
-    <input id="loginUser" class="sm" autocomplete="username" autocapitalize="off" spellcheck="false" aria-label="Usuario" placeholder="Usuario">
-    <input id="loginClave" type="password" autocomplete="current-password" aria-label="Clave" placeholder="Clave">
+    <div id="loginAux"></div>
+    <button class="btn" id="loginAdm">Soy administrador o dueño</button>
+    <div id="loginKeyBox" hidden>
+      <input id="loginClave" type="password" autocomplete="current-password" aria-label="Clave" placeholder="Clave de administrador o dueño">
+      <button class="btn tape" id="loginOk">Entrar</button>
+    </div>
     <label class="chk"><input type="checkbox" id="loginRec" checked> Recordar en este dispositivo</label>
     <div class="pin-err" id="loginErr" aria-live="polite"></div>
-    <button class="btn tape" id="loginOk">Entrar</button>
   </div>
 </dialog>
 
@@ -799,6 +814,22 @@ body.ventas #locShare { display: none !important; }
     <div class="pin-err" id="qtyErr" aria-live="polite"></div>
     <div class="row"><button class="btn tape" id="qtyOk">Guardar cantidad</button></div>
     <div class="row"><button class="btn" id="qtySkip">Sin cantidad</button><button class="btn" id="qtyNo">Cancelar</button></div>
+  </div>
+</dialog>
+
+<dialog id="dteDlg" aria-label="Factura DTE">
+  <div class="pin-box wide" style="max-height:calc(100dvh - 24px);overflow-y:auto">
+    <h2>Factura DTE</h2>
+    <p class="soft">Sube la factura (PDF o JSON). La app lee los productos y te muestra dónde guardarlos. El archivo no se guarda en ningún lado.</p>
+    <input style="letter-spacing:normal;text-transform:none;font-size:14px" id="dteFile" type="file" accept=".pdf,application/pdf,.json,application/json" aria-label="Archivo de la factura">
+    <div id="dteMsg" aria-live="polite" style="color:var(--mute);font-size:14px;flex:none"></div>
+    <div id="dteList" style="flex:none"></div>
+    <div class="row" id="dteAct" hidden>
+      <button class="btn" id="dtePrint">Imprimir / PDF</button>
+      <button class="btn" id="dteToUb">Pasar a la lista de ubicaciones</button>
+    </div>
+    <div class="row"><button class="btn" id="dteAdd" hidden>Agregar al catálogo los que faltan</button></div>
+    <div class="row"><button class="btn" id="dteNo">Cerrar</button></div>
   </div>
 </dialog>
 
@@ -904,8 +935,8 @@ body.ventas #locShare { display: none !important; }
 /* =====================================================================
    CONFIGURACIÓN: pega aquí la URL de tu Apps Script (termina en /exec)
    ===================================================================== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbwqnnaGF2tWe_I1KJDmfFSgK79HUey9yUyCW5rlT-f3z8xH8lJsqNkywjCaY2hKi3yj/exec';
-const SERVER_MIN = 18;   // versión mínima de Code.gs que necesita esta web
+const API_URL = 'https://script.google.com/macros/s/AKfycbxJKeuhi6P_lX-ZbAmEjAQPt9Kt2In1aGOJMtu50zirz2NLVTptM-HgvTTFdj_mR_8c/exec';
+const SERVER_MIN = 20;   // versión mínima de Code.gs que necesita esta web
 // Sucursales: el "id" debe ser igual al de Code.gs. Cada una tiene SU PROPIA hoja de Google (su catálogo, fotos y ubicaciones).
 // embebido: true = usa el catálogo incluido abajo mientras descarga el de su hoja (solo sirve para una sucursal).
 const SUCURSALES = [
@@ -1001,7 +1032,7 @@ async function kvSet(k, v) {
   try { const db = await idb(); await new Promise((res, rej) => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); }
   catch (e) { try { localStorage.setItem('kv_' + k, JSON.stringify(v)); } catch (_) {} }
 }
-const outKey = () => 'out:' + SES.suc + ':' + (SES.usuario || 'maestra');
+const outKey = () => 'out:' + SES.suc + ':' + (SES.usuario || 'OWNER');
 async function outLoad() { const k = outKey(); const v = (await kvGet(k)) || []; if (k === outKey()) { OUT.key = k; OUT.items = v; } drawStatus(); }
 function outSave() { kvSet(OUT.key, OUT.items); }
 function outAdd(a, p, ts) {
@@ -1060,7 +1091,7 @@ $('#stSend').addEventListener('click', flushOutbox);
 
 // Cambios que aún no se envían, para mostrarlos en el Registro
 function pendRows() {
-  const out = [], me = SES.usuario || 'maestra';
+  const out = [], me = SES.usuario || 'OWNER';
   OUT.items.forEach(x => {
     const mk = (c, det, a) => { const it = CODEMAP_get(c); out.push({ t: new Date(x.ts).toISOString(), u: me, tipo: 'ubicacion', a, c, d: it ? it.d : c, det, pend: true }); };
     if (x.a === 'ubicacion_lote') (x.p.codigos || []).forEach(c => mk(c, x.p.ubicacion, 'agregada'));
@@ -1663,7 +1694,7 @@ function setLocs(it, arr) {
   if ($('#locDlg').open && locItem && locItem.c === it.c) drawLocList();
   if (state.q) refresh();
 }
-function logLocal(it, u, a) { if (RECENT) RECENT.unshift({ t: new Date().toISOString(), u: SES.usuario || 'maestra', tipo: 'ubicacion', a, c: it.c, d: it.d, det: u }); }
+function logLocal(it, u, a) { if (RECENT) RECENT.unshift({ t: new Date().toISOString(), u: SES.usuario || 'OWNER', tipo: 'ubicacion', a, c: it.c, d: it.d, det: u }); }
 const QMSG = 'Sin internet: se guardó en el teléfono y se envía solo cuando vuelva la red';
 const qOf = x => (x && x.q != null) ? x.q : null;
 const qTag = x => qOf(x) !== null ? `<span class="qn" title="Cantidad en PCS">${qOf(x)} PCS</span>` : '';
@@ -1760,7 +1791,7 @@ $('#cpClear').addEventListener('click', () => { if (!COPIED.size || !confirm('¿
 const REC = { user: '__yo', tipo: 'ubicacion', q: '', users: new Set(), usersLoaded: false, loading: false };
 function recFilterUser() { return REC.user === '__yo' ? (SES.usuario || '') : REC.user; }
 function drawRecTools() {
-  const me = SES.usuario || 'maestra';
+  const me = SES.usuario || 'OWNER';
   const us = [...new Set([...REC.users, me])].sort();
   $('#recUser').innerHTML = `<option value="__yo">Mis registros</option><option value="">Todos los usuarios</option>` +
     us.filter(u => u !== me).map(u => `<option value="${esc(u)}">${esc(u)}</option>`).join('');
@@ -1777,7 +1808,7 @@ async function loadRecent(force) {
     if (!REC.usersLoaded) {
       REC.usersLoaded = true;
       try {
-        if (isAdmin()) { const u = await apiGet({ action: 'usuarios_lista' }); if (u.ok) (u.usuarios || []).forEach(x => REC.users.add(x.usuario)); REC.users.add('maestra'); REC.users.add('admin'); }
+        if (isAdmin()) { const u = await apiGet({ action: 'usuarios_lista' }); if (u.ok) (u.usuarios || []).forEach(x => REC.users.add(x.usuario)); REC.users.add('OWNER'); REC.users.add('admin'); }
       } catch (e) { REC.usersLoaded = false; }
       drawRecTools();
     }
@@ -1828,7 +1859,7 @@ const fHora = d => d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digi
 let RECROWS = [];
 function renderRecent(failed) {
   const box = $('#recList');
-  const yo = SES.usuario || 'maestra', fu = recFilterUser();
+  const yo = SES.usuario || 'OWNER', fu = recFilterUser();
   let pend = pendRows().filter(r => (!fu || r.u === fu) && (!REC.tipo || r.tipo === REC.tipo));
   const q = nk(REC.q || ''); if (q) pend = pend.filter(r => nk(r.d + ' ' + r.c + ' ' + r.det).includes(q));
   RECROWS = pend.concat(failed ? [] : (RECENT || []));
@@ -2654,23 +2685,38 @@ $('#impGrid').addEventListener('click', async e => {
 /* ---------- Sucursales y claves ---------- */
 let loginSuc = SUCURSALES[0].id;
 function drawLoginSeg() { $('#loginSeg').innerHTML = SUCURSALES.map(s => `<button class="seg-b" data-s="${s.id}" aria-pressed="${s.id === loginSuc}">${esc(s.nombre)}</button>`).join(''); }
-$('#loginSeg').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (b) { loginSuc = b.dataset.s; drawLoginSeg(); $('#loginClave').focus(); } });
+$('#loginSeg').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (b) { loginSuc = b.dataset.s; drawLoginSeg(); drawLoginAux(); } });
 function closeOthers() { document.querySelectorAll('dialog[open]').forEach(d => { if (d.id !== 'loginDlg') d.close(); }); stopScanCam(); }
 function showLogin(msg) {
   closeOthers(); document.body.classList.add('locked'); SES = null;
-  drawLoginSeg(); $('#loginClave').value = ''; $('#loginErr').textContent = msg || ''; $('#loginRec').checked = REMEMBER;
+  drawLoginSeg(); drawLoginAux(); loginMode(false); $('#loginClave').value = ''; $('#loginErr').textContent = msg || ''; $('#loginRec').checked = REMEMBER;
   if (!$('#loginDlg').open) $('#loginDlg').showModal();
-  setTimeout(() => ($('#loginUser').value ? $('#loginClave') : $('#loginUser')).focus(), 60);
 }
-function sessionExpired() { clearSes(); EDIT = false; showLogin('Tu usuario o clave ya no son válidos. Entra de nuevo.'); }
+function sessionExpired() { clearSes(); EDIT = false; showLogin('Tu usuario ya no es válido o fue desactivado. Entra de nuevo.'); }
 $('#loginDlg').addEventListener('cancel', e => e.preventDefault());   // no se puede cerrar sin entrar
-async function doLogin() {
-  const clave = $('#loginClave').value, usuario = $('#loginUser').value.trim().toLowerCase(); if (!clave) { $('#loginErr').textContent = 'Escribe tu clave'; return; }
+function auxKey(suc) { return 'bodega_aux_' + suc; }
+async function drawLoginAux() {
+  const box = $('#loginAux'), suc = loginSuc; let lista = null;
+  try { lista = JSON.parse(localStorage.getItem(auxKey(suc)) || 'null'); } catch (e) {}
+  const pinta = l => { if (suc !== loginSuc) return; box.innerHTML = l && l.length ? l.map(u => `<button class="btn" data-u="${esc(u.usuario)}">${esc(u.nombre || u.usuario)}</button>`).join('') : '<p style="color:var(--mute);font-size:14px">' + (l ? 'Esta sucursal todavía no tiene auxiliares. El administrador los crea en Admin.' : 'Cargando…') + '</p>'; };
+  pinta(lista);
+  if (!API_URL) return;
+  try {
+    const j = await rawPost({ action: 'auxiliares', suc });
+    if (j && j.ok) { lista = j.usuarios; try { localStorage.setItem(auxKey(suc), JSON.stringify(lista)); } catch (e) {} pinta(lista); }
+  } catch (e) { if (!lista) { box.innerHTML = '<p style="color:var(--mute);font-size:14px">Sin conexión: la primera vez necesitas internet para ver la lista.</p>'; } }
+}
+function loginMode(adm) { $('#loginKeyBox').hidden = !adm; $('#loginAux').hidden = adm; $('#loginAdm').textContent = adm ? 'Volver a la lista de auxiliares' : 'Soy administrador o dueño'; if (adm) setTimeout(() => $('#loginClave').focus(), 60); }
+$('#loginAdm').addEventListener('click', () => loginMode($('#loginKeyBox').hidden));
+$('#loginAux').addEventListener('click', e => { const b = e.target.closest('[data-u]'); if (b) doLogin(b.dataset.u, ''); });
+async function doLogin(usuario, clave) {
+  usuario = usuario || ''; clave = clave || '';
+  if (!usuario && !clave) { $('#loginErr').textContent = 'Escribe tu clave'; return; }
   if (!API_URL) { $('#loginErr').textContent = 'Falta conectar la nube: pega tu URL en API_URL.'; return; }
   $('#loginErr').textContent = 'Verificando…';
   try {
     const j = await rawPost({ action: 'login', suc: loginSuc, usuario, clave });
-    if (!j.ok) { if (j.otra && SUCURSALES.some(x => x.id === j.otra)) { loginSuc = j.otra; drawLoginSeg(); $('#loginErr').textContent = j.error.replace(/Elige .* arriba y vuelve a entrar\./, 'Ya la elegí arriba: toca Entrar.'); return; } throw new Error(j.error || 'Usuario o clave incorrectos'); }
+    if (!j.ok) { if (j.otra && SUCURSALES.some(x => x.id === j.otra)) { loginSuc = j.otra; drawLoginSeg(); drawLoginAux(); $('#loginErr').textContent = j.error.replace(/Elige .* arriba y vuelve a entrar\./, 'Ya la elegí arriba: toca Entrar.'); return; } $('#loginErr').textContent = j.error || 'No se pudo entrar'; return; }
     REMEMBER = $('#loginRec').checked; SES = { suc: loginSuc, clave, rol: j.rol, usuario: j.usuario, nombre: j.nombre }; saveSes();
     $('#loginDlg').close(); enterApp();
   } catch (e) {
@@ -2680,14 +2726,14 @@ async function doLogin() {
       : m;
   }
 }
-$('#loginOk').addEventListener('click', doLogin);
-$('#loginClave').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-$('#loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginClave').focus(); });
+$('#loginOk').addEventListener('click', () => doLogin('', $('#loginClave').value));
+$('#loginClave').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin('', $('#loginClave').value); });
 function enterApp() {
   document.body.classList.remove('locked');
   $('#sucName').textContent = sucInfo(SES.suc).nombre + (isMaster() ? '' : ' · ' + (SES.nombre || SES.usuario));   // el administrador de sucursal también muestra su nombre
   $('#adminBtn').hidden = !isAdmin(); $('#resBtn').hidden = !isAdmin();
   document.body.classList.toggle('ventas', isVentas());
+  pushInit();
   OUT.items = []; OUT.key = ''; mueLoadLocal(); REC.user = isAdmin() ? '' : '__yo'; pedLoadCache(); LOCQ = null; copiedLoad(); REC.users = new Set(); REC.usersLoaded = false; REC.q = ''; $('#recQ').value = ''; CODEMAP = null;
   $('#sessBtn').textContent = isMaster() ? 'Cambiar sucursal' : 'Salir';
   loadCaches(); loadCatalog(); RECENT = null; SERVER_OK = null; NCMAP = new Map(); UBI.rows = [];
@@ -2714,7 +2760,7 @@ $('#sucNo').addEventListener('click', () => $('#sucDlg').close());
 /* ---------- Muestreos (contar una categoría y guardar el avance) ---------- */
 const LMUE = {};   // id -> { id, nombre, usuario, inicio, estado, items: [{c, e: 'pend'|'ok'|'falta', u, t}], mod, dirty }
 const MUE = { cur: null, filt: 'pend', show: 60, user: '', remote: [], users: [], loadedOnce: false };
-const mueKey = () => 'bodega_mue_' + SES.suc + '_' + (SES.usuario || 'maestra');
+const mueKey = () => 'bodega_mue_' + SES.suc + '_' + (SES.usuario || 'OWNER');
 function mueLoadLocal() {
   Object.keys(LMUE).forEach(k => delete LMUE[k]);
   try { Object.assign(LMUE, JSON.parse(localStorage.getItem(mueKey()) || '{}')); } catch (e) {}
@@ -2750,7 +2796,7 @@ async function mueLoadRemote() {
   try {
     const j = await apiGet({ action: 'muestreos' });
     if (j.ok) MUE.remote = j.items || [];
-    if (isAdmin() && !MUE.users.length) { const u = await apiGet({ action: 'usuarios_lista' }); if (u.ok) MUE.users = ['maestra', 'admin'].concat((u.usuarios || []).map(x => x.usuario)); }
+    if (isAdmin() && !MUE.users.length) { const u = await apiGet({ action: 'usuarios_lista' }); if (u.ok) MUE.users = ['OWNER', 'admin'].concat((u.usuarios || []).map(x => x.usuario)); }
   } catch (e) {}
   MUE.loadedOnce = true; drawMueList();
 }
@@ -2770,8 +2816,8 @@ function drawMueList() {
   if (!SES || $('#mueListBox').hidden) return;
   const sel = $('#mueUser'); sel.hidden = !isAdmin();
   if (isAdmin()) {
-    const us = [...new Set(['maestra'].concat(MUE.users, Object.values(LMUE).map(m => m.usuario), MUE.remote.map(x => x.usuario)))].filter(Boolean);
-    sel.innerHTML = '<option value="">Todos los auxiliares</option>' + us.map(u => `<option value="${esc(u)}">${esc(u === 'maestra' ? 'Dueño (maestra)' : u)}</option>`).join('');
+    const us = [...new Set(['OWNER'].concat(MUE.users, Object.values(LMUE).map(m => m.usuario), MUE.remote.map(x => x.usuario)))].filter(Boolean);
+    sel.innerHTML = '<option value="">Todos los auxiliares</option>' + us.map(u => `<option value="${esc(u)}">${esc(u)}</option>`).join('');
     sel.value = MUE.user;
   }
   const rows = mueRows();
@@ -2806,7 +2852,7 @@ async function mueOpen(id) {
     try {
       const j = await apiGet({ action: 'muestreo_get', id });
       if (!j.ok) throw new Error(j.error || 'Error');
-      m = LMUE[id] = { id, nombre: j.nombre, usuario: h ? h.usuario : (SES.usuario || 'maestra'), inicio: Date.parse(h && h.inicio) || Date.now(), estado: j.estado,
+      m = LMUE[id] = { id, nombre: j.nombre, usuario: h ? h.usuario : (SES.usuario || 'OWNER'), inicio: Date.parse(h && h.inicio) || Date.now(), estado: j.estado,
         items: j.items.map(x => ({ c: x.c, e: x.e, u: x.u || '', t: x.t ? Date.parse(x.t) : 0, q: x.q == null ? null : x.q })), mod: Date.parse(h && h.mod) || Date.now(), dirty: false };
       mueSaveLocal();
     } catch (e) { toast('No se pudo abrir (necesita internet): ' + e.message, 4000); return; }
@@ -2934,7 +2980,7 @@ $('#mnOk').addEventListener('click', () => {
   if (!its.length) { $('#mnInfo').textContent = 'No hay productos con ese filtro.'; return; }
   if (its.length > 2000) { mnInfo(); return; }
   const id = 'M' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  const m = LMUE[id] = { id, nombre: ($('#mnName').value.trim() || 'Muestreo').slice(0, 80), usuario: SES.usuario || 'maestra', inicio: Date.now(), estado: 'abierto',
+  const m = LMUE[id] = { id, nombre: ($('#mnName').value.trim() || 'Muestreo').slice(0, 80), usuario: SES.usuario || 'OWNER', inicio: Date.now(), estado: 'abierto',
     items: its.map(it => ({ c: it.c, e: 'pend', u: '', t: 0, q: null })), mod: Date.now(), dirty: true };
   mueSaveLocal(); mueTouch(m); $('#mueNewDlg').close();
   MUE.cur = m; MUE.filt = 'pend'; MUE.show = 60; $('#mueListBox').hidden = true; $('#mueDet').hidden = false; drawMueDet(); window.scrollTo(0, 0);
@@ -2951,7 +2997,7 @@ function openAdmin() {
   drawAdm(); $('#adminDlg').showModal(); admLoad(); admClear();
 }
 function drawAdm() {
-  $('#admTabs').innerHTML = (isMaster() ? [['usr', 'Auxiliares'], ['drv', 'Drive'], ['imp', 'Subir productos'], ['mov', 'Pasar fotos y productos']] : [['usr', 'Auxiliares'], ['drv', 'Drive']]).map(([k, t]) => `<button class="seg-b" data-t="${k}" aria-pressed="${ADM.tab === k}">${t}</button>`).join('');
+  $('#admTabs').innerHTML = (isMaster() ? [['usr', 'Auxiliares'], ['drv', 'Drive'], ['dte', 'Factura DTE'], ['imp', 'Subir productos'], ['mov', 'Pasar fotos y productos']] : [['usr', 'Auxiliares'], ['drv', 'Drive'], ['dte', 'Factura DTE']]).map(([k, t]) => `<button class="seg-b" data-t="${k}" aria-pressed="${ADM.tab === k}">${t}</button>`).join('');
   $('#admUsr').hidden = ADM.tab !== 'usr'; $('#admMov').hidden = ADM.tab !== 'mov'; $('#admImp').hidden = ADM.tab !== 'imp'; $('#admDrv').hidden = ADM.tab !== 'drv';
   $('#admSuc').hidden = !isMaster();
   $('#admSuc').innerHTML = SUCURSALES.map(s => `<button class="seg-b" data-s="${s.id}" aria-pressed="${s.id === ADM.suc}">${esc(s.nombre)}</button>`).join('');
@@ -2959,39 +3005,170 @@ function drawAdm() {
   $('#admO').innerHTML = opts(ADM.o); $('#admD').innerHTML = opts(ADM.d);
   const cur = $('#impSuc').value || ADM.suc; $('#impSuc').innerHTML = opts(cur) + (SUCURSALES.length > 1 ? `<option value="*"${cur === '*' ? ' selected' : ''}>Ambas sucursales (sin ubicaciones)</option>` : '');
 }
-$('#admTabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { ADM.tab = b.dataset.t; drawAdm(); } });
+$('#admTabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { if (b.dataset.t === 'dte') { $('#adminDlg').close(); setView('ubi'); $('#dteDlg').showModal(); return; } ADM.tab = b.dataset.t; drawAdm(); } });
 $('#admSuc').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (b) { ADM.suc = b.dataset.s; drawAdm(); admLoad(); admClear(); } });
 $('#admO').addEventListener('change', e => { ADM.o = e.target.value; });
 $('#admD').addEventListener('change', e => { ADM.d = e.target.value; });
 $('#admSwap').addEventListener('click', () => { const t = ADM.o; ADM.o = ADM.d; ADM.d = t; drawAdm(); $('#admMovMsg').textContent = ''; });
-function admClear() { $('#admU').value = ''; $('#admN').value = ''; $('#admC').value = ''; $('#admA').checked = true; $('#admR').value = 'auxiliar'; $('#admU').readOnly = false; $('#admErr').textContent = ''; $('#admC').placeholder = 'Clave (mínimo 4 caracteres)'; }
+function admClear() { $('#admU').value = ''; $('#admN').value = ''; $('#admA').checked = true; $('#admR').value = 'auxiliar'; $('#admU').readOnly = false; $('#admErr').textContent = ''; }
 async function admLoad() {
   const box = $('#admList'); box.innerHTML = '<p class="soft">Cargando…</p>';
   try {
     const j = await apiAs(ADM.suc, 'usuarios_lista'); if (!j.ok) throw new Error(j.error || 'Error');
     ADM.users = j.usuarios || [];
-    box.innerHTML = ADM.users.length ? ADM.users.map(u => `<div class="admrow"><div><b>${esc(u.nombre || u.usuario)}</b> <small style="color:var(--mute)">${esc(u.usuario)}</small>${u.rol === 'ventas' ? ' <span class="tag">Sala de ventas</span>' : ''} <span class="tag ${u.activo ? 'good' : 'bad'}">${u.activo ? 'Activo' : 'Desactivado'}</span></div><button class="mini" data-edit="${esc(u.usuario)}">Editar</button></div>`).join('')
+    box.innerHTML = ADM.users.length ? ADM.users.map(u => `<div class="admrow"><div><b>${esc(u.nombre || u.usuario)}</b> <small style="color:var(--mute)">${esc(u.usuario)}</small>${u.rol === 'ventas' ? ' <span class="tag">Sala de ventas</span>' : ''} <span class="tag ${u.activo ? 'good' : 'bad'}">${u.activo ? 'Activo' : 'Desactivado'}</span></div><div class="row" style="gap:6px;flex:none"><button class="mini" data-edit="${esc(u.usuario)}">Editar</button><button class="mini" data-del="${esc(u.usuario)}" style="color:#f87171">Borrar</button></div></div>`).join('')
       : `<p class="soft">Todavía no hay auxiliares en ${esc(sucInfo(ADM.suc).nombre)}. Crea el primero abajo.</p>`;
   } catch (e) { box.innerHTML = `<p class="soft">No se pudo cargar: ${esc(e.message)}</p>`; }
 }
-$('#admList').addEventListener('click', e => {
+$('#admList').addEventListener('click', async e => {
+  const d = e.target.closest('[data-del]');
+  if (d) {
+    const u = ADM.users.find(x => x.usuario === d.dataset.del); if (!u) return;
+    if (!confirm(`¿Borrar el perfil «${u.usuario}» (${u.nombre || ''}) de ${sucInfo(ADM.suc).nombre}?\n\nYa no podrá entrar. Lo que registró antes se conserva en el registro.`)) return;
+    $('#admErr').textContent = 'Borrando…';
+    try { const j = await apiAs(ADM.suc, 'usuario_borrar', { usuario_borrar: u.usuario }); if (!j.ok) throw new Error(j.error || 'Error'); admClear(); $('#admErr').textContent = 'Perfil «' + u.usuario + '» borrado'; admLoad(); }
+    catch (err) { $('#admErr').textContent = err instanceof NetErr ? 'Sin internet' : err.message; }
+    return;
+  }
   const b = e.target.closest('[data-edit]'); if (!b) return;
   const u = ADM.users.find(x => x.usuario === b.dataset.edit); if (!u) return;
-  $('#admU').value = u.usuario; $('#admU').readOnly = true; $('#admN').value = u.nombre || ''; $('#admC').value = ''; $('#admA').checked = u.activo; $('#admR').value = u.rol === 'ventas' ? 'ventas' : 'auxiliar';
-  $('#admC').placeholder = 'Nueva clave (vacío = no cambiar)'; $('#admErr').textContent = 'Editando a ' + u.usuario; $('#admN').focus();
+  $('#admU').value = u.usuario; $('#admU').readOnly = true; $('#admN').value = u.nombre || ''; $('#admA').checked = u.activo; $('#admR').value = u.rol === 'ventas' ? 'ventas' : 'auxiliar';
+  $('#admErr').textContent = 'Editando a ' + u.usuario; $('#admN').focus();
 });
 $('#admNew').addEventListener('click', admClear);
 $('#admSave').addEventListener('click', async () => {
-  const usuario = $('#admU').value.trim().toLowerCase(), nombre = $('#admN').value.trim(), clave = $('#admC').value, activo = $('#admA').checked;
+  const usuario = $('#admU').value.trim().toLowerCase(), nombre = $('#admN').value.trim(), activo = $('#admA').checked;
   if (!usuario) { $('#admErr').textContent = 'Escribe el usuario (sin espacios, ej: juan)'; return; }
   $('#admErr').textContent = 'Guardando…';
   try {
-    const j = await apiAs(ADM.suc, 'usuario_guardar', { nuevoUsuario: usuario, nombreNuevo: nombre || usuario, claveNueva: clave, activoNuevo: activo, rolNuevo: $('#admR').value });
+    const j = await apiAs(ADM.suc, 'usuario_guardar', { nuevoUsuario: usuario, nombreNuevo: nombre || usuario, activoNuevo: activo, rolNuevo: $('#admR').value });
     if (!j.ok) throw new Error(j.error || 'Error');
     toast('Auxiliar guardado en ' + sucInfo(ADM.suc).nombre); admClear(); admLoad();
   } catch (e) { $('#admErr').textContent = e instanceof NetErr ? 'Sin internet' : e.message; }
 });
 $('#admNo').addEventListener('click', () => $('#adminDlg').close());
+/* ---- Factura DTE: lector (PDF con pdf.js o JSON oficial) ---- */
+// pages: [{h: altoPagina, items:[{s, x, y}]}]  →  [{n, c, q, d}]
+function dteParse(pages) {
+  const T = s => String(s || '').trim();
+  let H = null;
+  for (const pg of pages) {
+    const f = w => pg.items.find(i => T(i.s) === w);
+    const no = pg.items.find(i => T(i.s) === 'No.'), ca = f('Cant.'), un = f('Unidad'), pr = f('Precio');
+    if (no && ca && un && pr && Math.abs(no.y - ca.y) < 6) { H = { no: no.x, ca: ca.x, un: un.x, pr: pr.x }; break; }
+  }
+  if (!H) throw new Error('No encontré la tabla de productos en este PDF. ¿Es una factura DTE?');
+  const rows = [];
+  for (const pg of pages) {
+    const hdr = pg.items.find(i => T(i.s) === 'Cant.' && Math.abs(i.x - H.ca) < 6);
+    const top = hdr ? hdr.y - 8 : pg.h;
+    const sum = pg.items.filter(i => /^(Suma de ventas|Suma total|Sumatoria)/i.test(T(i.s))).map(i => i.y);
+    const inT = pg.items.filter(i => T(i.s) && i.y < top);
+    const anc = inT.filter(i => i.x < H.ca - 40 && /^\d{1,4}$/.test(T(i.s))).sort((a, b) => b.y - a.y);
+    anc.forEach((a, k) => {
+      const up = k ? (anc[k - 1].y + a.y) / 2 : top;
+      let lo = k < anc.length - 1 ? (anc[k + 1].y + a.y) / 2 : (sum.length ? Math.max(...sum) + 2 : a.y - 45);
+      if (k === anc.length - 1 && sum.length === 0) lo = a.y - 45;
+      const mine = inT.filter(i => i.y <= up && i.y > lo && i !== a);
+      const col = (f) => mine.filter(f).sort((p, q) => (Math.abs(p.y - q.y) < 3 ? p.x - q.x : q.y - p.y));
+      const code = col(i => i.x < H.ca - 4).map(i => T(i.s)).join('').replace(/\s+/g, '');
+      const cant = col(i => i.x >= H.ca - 4 && i.x < H.un - 4).map(i => T(i.s)).join('');
+      let d = '';
+      col(i => i.x >= H.un + 25 && i.x < H.pr - 15).forEach(i => { const s = T(i.s); d += (d && !/[-\/]$/.test(d) ? ' ' : '') + s; });
+      d = d.replace(/\s*\$\s*[\d.,]+\s*$/, '').replace(/\s+/g, ' ').trim();
+      rows.push({ n: +T(a.s), c: code, q: parseFloat(cant.replace(',', '.')) || 0, d });
+    });
+  }
+  return rows.filter(r => r.c || r.d);
+}
+function dteFromJson(j) {
+  const cu = j && (j.cuerpoDocumento || (j.dte && j.dte.cuerpoDocumento));
+  if (!Array.isArray(cu)) throw new Error('Este JSON no parece un DTE (no tiene cuerpoDocumento).');
+  return cu.map((x, k) => ({ n: x.numItem || k + 1, c: String(x.codigo || '').replace(/\s+/g, ''), q: Number(x.cantidad) || 0, d: String(x.descripcion || '').replace(/\s+/g, ' ').trim() }));
+}
+
+const DTE = { rows: [], name: '' };
+const PDFJS_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', PDFJS_WORKER = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+function loadPdfjs() {
+  return new Promise((res, rej) => {
+    const go = async () => {
+      try {
+        const L = window.pdfjsLib;
+        if (!L.GlobalWorkerOptions.workerSrc) { const w = await (await fetch(PDFJS_WORKER)).blob(); L.GlobalWorkerOptions.workerSrc = URL.createObjectURL(w); }
+        res(L);
+      } catch (e) { rej(new Error('No se pudo cargar el lector de PDF. Revisa tu internet o sube el archivo JSON de la factura.')); }
+    };
+    if (window.pdfjsLib) return go();
+    const sc = document.createElement('script'); sc.src = PDFJS_URL; sc.onload = go;
+    sc.onerror = () => rej(new Error('No se pudo cargar el lector de PDF. Revisa tu internet o sube el archivo JSON de la factura.'));
+    document.head.appendChild(sc);
+  });
+}
+async function dteReadFile(f) {
+  if (/\.json$/i.test(f.name) || f.type === 'application/json') return dteFromJson(JSON.parse(await f.text()));
+  const L = await loadPdfjs(), doc = await L.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise, pages = [];
+  for (let p = 1; p <= doc.numPages; p++) {
+    const pg = await doc.getPage(p), tc = await pg.getTextContent();
+    pages.push({ h: pg.view[3], items: tc.items.map(i => ({ s: i.str, x: i.transform[4], y: i.transform[5] })) });
+  }
+  return dteParse(pages);
+}
+const dteQ = n => (Math.round(n * 100) / 100).toString().replace('.', ',');
+function dteDraw() {
+  const R = DTE.rows, nf = R.filter(r => !r.it).length;
+  $('#dteAct').hidden = !R.length; $('#dteAdd').hidden = !(isMaster() && nf); $('#dteAdd').textContent = `Agregar al catálogo los ${nf} que faltan`;
+  $('#dteList').innerHTML = R.map((r, k) => {
+    const bins = r.it && r.it.ubs && r.it.ubs.length ? r.it.ubs.slice().reverse().map((b, j) => `<span class="bin${j ? ' old' : ''}">${esc(b.u)}${qTag(b)}</span>`).join('') : '<span class="bin none">Sin ubicación</span>';
+    return `<div class="ubrow"><div><b>${esc(r.it ? r.it.d : r.d)}</b><small>${esc(r.c)} · Cant. factura: ${dteQ(r.q)}</small></div>` +
+      (r.it ? `<div>${bins}</div><div class="row"><button class="btn" data-dl="${k}">Ubicación</button></div>` : '<div><span class="tag warn">No está en el catálogo</span></div>') + '</div>';
+  }).join('');
+}
+function dteMatch() {
+  DTE.rows.forEach(r => { r.it = CODEMAP_get(r.c) || CODEMAP_get(r.c.toUpperCase()) || null; });
+  const f = DTE.rows.filter(r => r.it).length, w = DTE.rows.filter(r => r.it && !(r.it.ubs && r.it.ubs.length)).length;
+  $('#dteMsg').textContent = `${DTE.rows.length} productos en la factura · ${f} en el catálogo` + (w ? ` · ${w} sin ubicación` : '') + (DTE.rows.length - f ? ` · ${DTE.rows.length - f} no están` : '');
+  dteDraw();
+}
+$('#dteNo').addEventListener('click', () => $('#dteDlg').close());
+$('#dteFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; DTE.rows = []; dteDraw(); if (!f) return;
+  const m = $('#dteMsg'); m.textContent = 'Leyendo factura…'; DTE.name = f.name.replace(/\.\w+$/, '');
+  try {
+    DTE.rows = await dteReadFile(f);
+    if (!DTE.rows.length) { m.textContent = 'No encontré productos en la factura.'; return; }
+    dteMatch();
+  } catch (err) { m.textContent = err.message || 'No se pudo leer la factura'; }
+});
+$('#dteList').addEventListener('click', e => {
+  const b = e.target.closest('[data-dl]'); if (!b) return; const r = DTE.rows[+b.dataset.dl]; if (r && r.it) openLoc(r.it);
+});
+$('#locDlg').addEventListener('close', () => { if ($('#dteDlg').open) dteDraw(); });
+function dteDoc() {
+  return { title: 'Factura DTE · ' + (DTE.name || ''), sub: sucInfo(SES.suc).nombre + ' · ' + new Date().toLocaleDateString('es-SV'),
+    rows: DTE.rows.map(r => ({ t: r.it ? r.it.d : r.d, s: r.c + ' · ' + (r.it ? (r.it.ubs && r.it.ubs.length ? r.it.ubs.slice().reverse().map(b => b.u).join(', ') : 'SIN UBICACIÓN') : 'NO ESTÁ EN EL CATÁLOGO'), q: r.q })) };
+}
+$('#dtePrint').addEventListener('click', () => { $('#dteDlg').close(); setTimeout(() => printDoc(dteDoc()), 60); });
+$('#dteToUb').addEventListener('click', () => {
+  const f = ubFinal();
+  if (!f) { toast('Primero escribe la ubicación arriba (ej: 1B1) y vuelve a tocar', 4200); $('#dteDlg').close(); $('#ubLoc').focus(); return; }
+  let n = 0; DTE.rows.filter(r => r.it).forEach(r => {
+    const st = addItem(r.it, f, r.c);
+    if (st === 'pend') { const row = UBI.rows.find(x => x.st === 'pend' && x.it === r.it && x.loc === f); if (row && r.q > 0) row.cant = r.q; n++; }
+  });
+  renderUbi(); $('#dteDlg').close(); toast(`${n} productos en la lista para ${f}. Revisa y toca Guardar.`, 4500);
+});
+$('#dteAdd').addEventListener('click', async () => {
+  const miss = DTE.rows.filter(r => !r.it); if (!miss.length) return;
+  if (!confirm(`¿Agregar ${miss.length} productos nuevos al catálogo de ${sucInfo(SES.suc).nombre}? Quedan sin ubicación.`)) return;
+  const b = $('#dteAdd'); b.disabled = true;
+  try {
+    const j = await apiAs(SES.suc, 'productos_importar', { filas: miss.map(r => ({ c: r.c, d: r.d.toUpperCase(), u: '', l: '' })), soloVer: false });
+    if (!j.ok) throw new Error(j.error || 'Error');
+    await sync(); CODEMAP = null; dteMatch(); toast(`${j.nuevos} productos agregados`);
+  } catch (err) { $('#dteMsg').textContent = err instanceof NetErr ? 'Sin internet' : err.message; }
+  b.disabled = false;
+});
+
 /* ---- Subir productos nuevos desde Excel (solo administrador supremo) ---- */
 const IMP = { rows: [], suc: '' };
 const XLSX_URL = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.mini.min.js';
@@ -3160,6 +3337,59 @@ $('#drvSync').addEventListener('click', async () => {
   } catch (e) { m.textContent = 'No se pudo: ' + e.message; }
   b.disabled = false;
 });
+/* ---- Subir fotos desde el computador / teléfono (varias a la vez, asociadas por nombre de archivo) ---- */
+const PC = { files: [], byCode: null, byDesc: null };
+const normD = t => nk(String(t)).replace(/[^a-z0-9]+/g, ' ').trim();
+function pcMaps() {
+  if (PC.byCode) return;
+  PC.byCode = new Map(); PC.byDesc = new Map();
+  IDX.forEach(it => { PC.byCode.set(String(it.c).toUpperCase(), it); const k = normD(it.d); PC.byDesc.set(k, PC.byDesc.has(k) ? null : it); });
+}
+function pcMatch(name) {
+  pcMaps();
+  const stem = name.replace(/\.[^.]+$/, '').trim(), up = stem.toUpperCase();
+  const sin = up.replace(/[\s_-]*\(?\d{1,2}\)?$/, '');
+  for (const c of [up, sin]) if (c && PC.byCode.has(c)) return PC.byCode.get(c);
+  for (let i = up.length - 1; i > 1; i--) if (' _-.'.includes(up[i]) && PC.byCode.has(up.slice(0, i))) return PC.byCode.get(up.slice(0, i));
+  const d = normD(stem); if (PC.byDesc.get(d)) return PC.byDesc.get(d);
+  const m = d.match(/^(.+) (\d{1,2})$/); if (m && PC.byDesc.get(m[1])) return PC.byDesc.get(m[1]);
+  return null;
+}
+function pcDraw() {
+  const ok = PC.files.filter(f => f.it).length;
+  $('#pcList').innerHTML = PC.files.map((f, i) => `<div class="admrow" style="flex-wrap:wrap;gap:4px 8px"><div style="min-width:0;overflow-wrap:anywhere"><small style="color:var(--mute)">${esc(f.file.name)}</small><br>${f.it ? `<b>${esc(f.it.d)}</b> <small style="color:var(--mute)">${esc(f.it.c)}</small>` : `<span class="tag bad">Sin coincidencia</span> <input class="inp" data-pcs="${i}" list="pcDl" placeholder="Escribe para buscar el producto" style="width:100%;margin-top:4px">`}</div><button class="mini" data-pcx="${i}">Quitar</button></div>`).join('');
+  $('#pcGo').hidden = !ok; $('#pcGo').textContent = `Subir ${ok} ${ok === 1 ? 'foto' : 'fotos'}` + (PC.files.length > ok ? ` (${PC.files.length - ok} sin producto se omiten)` : '');
+}
+$('#pcFiles').addEventListener('change', e => {
+  PC.files = [...e.target.files].map(file => ({ file, it: pcMatch(file.name) })); e.target.value = '';
+  $('#pcMsg').textContent = PC.files.length ? '' : ''; pcDraw();
+});
+$('#pcList').addEventListener('input', e => {
+  const t = e.target.closest('[data-pcs]'); if (!t) return;
+  const toks = nk(t.value).split(/\s+/).filter(Boolean); if (!toks.length) return;
+  const dl = $('#pcDl'); dl.innerHTML = IDX.filter(it => { const b = nk(it.d + ' ' + it.c); return toks.every(k => b.includes(k)); }).slice(0, 30).map(it => `<option value="${esc(it.c)} · ${esc(it.d)}"></option>`).join('');
+});
+$('#pcList').addEventListener('change', e => {
+  const t = e.target.closest('[data-pcs]'); if (!t) return;
+  pcMaps(); const it = PC.byCode.get(t.value.split(' · ')[0].trim().toUpperCase()); if (it) { PC.files[+t.dataset.pcs].it = it; pcDraw(); }
+});
+$('#pcList').addEventListener('click', e => { const x = e.target.closest('[data-pcx]'); if (x) { PC.files.splice(+x.dataset.pcx, 1); pcDraw(); } });
+$('#pcGo').addEventListener('click', async () => {
+  const lista = PC.files.filter(f => f.it), m = $('#pcMsg'), b = $('#pcGo'); if (!lista.length) return;
+  b.disabled = true; let ok = 0, cola = 0; const fallos = [];
+  for (let i = 0; i < lista.length; i++) {
+    const f = lista[i]; m.textContent = `Subiendo ${i + 1} de ${lista.length}…`;
+    try {
+      const { b64, mime } = await compress(f.file);
+      const r = await apiQ('upload', { codigo: f.it.c, data: b64, mime });
+      if (!r.ok) throw new Error(r.error || 'Error');
+      if (r.queued) cola++; else { (PHOTOS[f.it.c] = PHOTOS[f.it.c] || []).push(r.id); ok++; }
+    } catch (err) { fallos.push(f.file.name + ': ' + (err.message || 'error')); }
+  }
+  savePhotosCache(); try { refresh(); } catch (e) {}
+  m.innerHTML = `Listo: <b>${ok}</b> ${ok === 1 ? 'foto subida' : 'fotos subidas'}` + (cola ? ` · ${cola} en espera de internet` : '') + (fallos.length ? `<br><small>No se subieron ${fallos.length}: ${esc(fallos.slice(0, 4).join(' | '))}</small>` : '');
+  PC.files = []; pcDraw(); b.disabled = false;
+});
 $('#drvOrden').addEventListener('click', async () => {
   if (!confirm('Esto mueve y renombra las fotos ya subidas dentro de Drive (Modelo / Modelo y años / Pieza). No se borra nada. ¿Seguir?')) return;
   const m = $('#drvMsg'), b = $('#drvOrden'); b.disabled = true; let primera = true, movidas = 0, err = 0;
@@ -3240,7 +3470,7 @@ function pdfBlob(doc, fs) {
     ops.push(`0.5 w 0.85 0.85 0.85 RG ${M} ${(y + fs * 0.25).toFixed(2)} m ${W - M} ${(y + fs * 0.25).toFixed(2)} l S`);
   });
   newPage();
-  pages.forEach((p, i) => { pages[i] = p + '\n' + `BT /F1 8 Tf 0.5 0.5 0.5 rg ${M} 22 Td (${pe('Bodega · Página ' + (i + 1) + ' de ' + pages.length)}) Tj ET`; });
+  pages.forEach((p, i) => { pages[i] = p + '\n' + `BT /F1 8 Tf 0.5 0.5 0.5 rg ${M} 22 Td (${pe('Multipart Bodega · Página ' + (i + 1) + ' de ' + pages.length)}) Tj ET`; });
   const objs = [], add = s => objs.push(s);
   const n = pages.length, kids = pages.map((_, i) => `${6 + 2 * i} 0 R`).join(' ');
   add('<< /Type /Catalog /Pages 2 0 R >>');
@@ -3274,17 +3504,29 @@ function locSearch(raw) {
     const items = locIdx().get(k).slice().sort((a, b) => cmpNat(a.d, b.d));
     return { loc: k, items };
   }
-  return null;
+  // Solo el estante o la bahía: «1» = todo el estante 1 · «31A» = estante 31, bahía A · «1A1» = esa ubicación exacta
+  if (!/^\d/.test(q) || (/^\d+$/.test(q) && q.length > 3)) return null;
+  const fin = q[q.length - 1], esDig = /\d/.test(fin), por = new Map();
+  locIdx().forEach((its, k) => {
+    const nk2 = normLoc(k); if (!nk2.startsWith(q)) return;
+    const sig = nk2[q.length]; if (sig && (esDig ? /\d/.test(sig) : /[a-z]/.test(sig))) return;
+    its.forEach(it => { if (!por.has(it.c)) por.set(it.c, { it, locs: [] }); por.get(it.c).locs.push(k); });
+  });
+  if (!por.size) return null;
+  const arr = [...por.values()].sort((a, b) => cmpNat(a.locs[0], b.locs[0]) || cmpNat(a.it.d, b.it.d));
+  const hayLetra = /[a-z]/.test(q);
+  return { loc: hayLetra ? String(raw).trim().toUpperCase() : 'Estante ' + String(raw).trim(), prefix: true, items: arr.map(x => x.it), por: new Map(arr.map(x => [x.it.c, x.locs])) };
 }
 const locQty = (it, loc) => { const x = (it.ubs || []).find(y => y.u === loc); return x && x.q != null ? x.q : null; };
+const locQtyL = it => { const L = LOCQ; if (!L.prefix) return locQty(it, L.loc); let t = null; (L.por.get(it.c) || []).forEach(k => { const q = locQty(it, k); if (q != null) t = (t || 0) + q; }); return t; };
 function locDoc() {
   const L = LOCQ; if (!L) return null;
   const f = new Date();
-  return { title: 'Ubicación ' + L.loc, sub: `${sucInfo(SES.suc).nombre} · ${L.items.length} ${L.items.length === 1 ? 'producto' : 'productos'} · ${fFecha(f)} ${fHora(f)}`,
-    rows: L.items.map(it => ({ t: it.d, s: it.c, q: locQty(it, L.loc) })) };
+  return { title: L.prefix ? L.loc : 'Ubicación ' + L.loc, sub: `${sucInfo(SES.suc).nombre} · ${L.items.length} ${L.items.length === 1 ? 'producto' : 'productos'} · ${fFecha(f)} ${fHora(f)}`,
+    rows: L.items.map(it => ({ t: it.d, s: it.c + (L.prefix ? ' · ' + L.por.get(it.c).join(', ') : ''), q: locQtyL(it) })) };
 }
 function locBarHTML() {
-  const L = LOCQ, pz = L.items.reduce((s, it) => s + (locQty(it, L.loc) || 0), 0);
+  const L = LOCQ, pz = L.items.reduce((s, it) => s + (locQtyL(it) || 0), 0);
   return `<div class="locbar"><div><b class="bin">${esc(L.loc)}</b> <span>${L.items.length} ${L.items.length === 1 ? 'producto' : 'productos'}${pz ? ' · ' + pz + ' PCS' : ''}</span></div>
     <div class="row" style="align-items:center;gap:10px">${fszHTML()}<button class="btn tape" data-lp="print" style="flex:none;height:42px">Imprimir</button><button class="btn" data-lp="pdf" style="flex:none;height:42px">Descargar PDF</button></div></div>`;
 }
@@ -3320,6 +3562,41 @@ $('#resList').addEventListener('click', e => {
   if (m) { $('#resDlg').close(); MUE.user = m.dataset.vm; setView('mue'); }
   if (r) { $('#resDlg').close(); REC.user = r.dataset.vr; RECENT = null; setView('rec'); }
 });
+
+/* ---------- Avisos de pedidos en el celular (notificación push) ---------- */
+const VAPID_PUB = 'BHg0WDx_MvEc_IgmGfNkqcGMp7XIeicknxMspcuVvj-ik4f_eSaa3PAPmMPqQJNayj_hYHBi2iPgiuGuW1qkPyI';
+const pushOK = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window && window.isSecureContext;
+const u8 = b => { const p = '='.repeat((4 - b.length % 4) % 4), r = atob((b + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from([...r].map(c => c.charCodeAt(0))); };
+async function pushSub(crear) {
+  const reg = await navigator.serviceWorker.ready;
+  let sub = await reg.pushManager.getSubscription();
+  if (!sub && crear) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u8(VAPID_PUB) });
+  return sub;
+}
+async function pushInit() {
+  const b = $('#pushBtn'); if (!b) return;
+  b.hidden = isVentas() || !API_URL;
+  if (b.hidden) return;
+  try {
+    if (pushOK() && Notification.permission === 'granted') {
+      const sub = await pushSub(true);
+      if (sub) { await apiPost('push_registrar', { endpoint: sub.endpoint }); b.textContent = 'Avisos ✓'; b.classList.add('on'); return; }
+    }
+  } catch (e) {}
+  b.textContent = 'Avisos'; b.classList.remove('on');
+}
+$('#pushBtn').addEventListener('click', async () => {
+  if (!pushOK()) { toast('Para recibir avisos instala la app (menú ⋮ → Instalar app) y ábrela desde su ícono. En iPhone: Compartir → Agregar a inicio (iOS 16.4 o más).', 7000); return; }
+  if (Notification.permission === 'denied') { toast('Los avisos están bloqueados. Actívalos en los ajustes del navegador (candado junto a la dirección → Notificaciones).', 7000); return; }
+  try {
+    if (Notification.permission !== 'granted' && (await Notification.requestPermission()) !== 'granted') { toast('No se activaron los avisos', 3000); return; }
+    const sub = await pushSub(true); const j = await apiPost('push_registrar', { endpoint: sub.endpoint });
+    if (!j.ok) throw new Error(j.error || 'Error');
+    toast('Listo: te avisaremos cuando te llegue un pedido', 4500); pushInit();
+  } catch (e) { toast(e instanceof NetErr ? 'Necesitas internet para activar los avisos' : 'No se pudieron activar los avisos: ' + e.message, 5000); }
+});
+try { navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.ir === 'pedidos' && SES) setView('ped'); }); } catch (e) {}
+if (/[?&]ir=pedidos/.test(location.search)) window.addEventListener('load', () => { const t = setInterval(() => { if (SES && !document.body.classList.contains('locked')) { clearInterval(t); setView('ped'); } }, 400); setTimeout(() => clearInterval(t), 15000); });
 
 /* ---------- Pedidos ---------- */
 const PED = { list: [], det: {}, cur: null, users: [] };
